@@ -694,7 +694,7 @@
 
           <label class="field">
             <span class="field-label">Phone number</span>
-            <input class="text-input" id="guestPhone" name="guestPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Your phone number" pattern="[0-9+(). -]{7,}" title="Enter a valid phone number" required>
+            <input class="text-input" id="guestPhone" name="guestPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Your phone number" minlength="7" maxlength="25" title="Enter a valid phone number" required>
           </label>
 
           <fieldset class="attendance">
@@ -1029,6 +1029,12 @@
         guestPlus.disabled = guests===3;
       }
 
+      function validatePhone() {
+        const hasEnoughDigits = guestPhone.value.replace(/\D/g,'').length>=7;
+        guestPhone.setCustomValidity(hasEnoughDigits?'':'Enter a valid phone number with at least 7 digits.');
+        return hasEnoughDigits;
+      }
+
       async function shareWeddingInvitation() {
         const invitationUrl = 'https://chrisdelzark.github.io/chris-miriam-wedding/';
         const shareText = 'Chris & Miriam invite you to celebrate their wedding on Saturday, 12 December 2026 at Sheraton Hotel, Makurdi.';
@@ -1046,6 +1052,7 @@
 
       async function shareRsvp(event) {
         event.preventDefault();
+        validatePhone();
         if (!rsvpForm.reportValidity()) return;
         const attendance = new FormData(rsvpForm).get('attendance');
         const message = guestMessage.value.trim();
@@ -1082,6 +1089,7 @@
       shareInvitation.addEventListener('click',shareWeddingInvitation);
       guestMinus.addEventListener('click',() => updateGuestCount(-1));
       guestPlus.addEventListener('click',() => updateGuestCount(1));
+      guestPhone.addEventListener('input',validatePhone);
       rsvpForm.addEventListener('submit',shareRsvp);
       window.addEventListener('scroll',requestScrollUpdate,{passive:true});
       window.addEventListener('resize',requestScrollUpdate,{passive:true});
