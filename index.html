@@ -10,9 +10,13 @@
   <meta property="og:description" content="Together with their families, Chris and Miriam invite you to celebrate with them on 12 December 2026.">
   <meta property="og:url" content="https://chrisdelzark.github.io/chris-miriam-wedding/">
   <meta property="og:image" content="https://chrisdelzark.github.io/chris-miriam-wedding/assets/whatsapp-preview-sealed.png">
+  <meta property="og:image:secure_url" content="https://chrisdelzark.github.io/chris-miriam-wedding/assets/whatsapp-preview-sealed.png">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="A closed oxblood and gold invitation for Chris and Miriam — 12 December 2026">
+  <meta property="og:site_name" content="Chris &amp; Miriam Wedding">
+  <meta property="og:locale" content="en_US">
   <link rel="canonical" href="https://chrisdelzark.github.io/chris-miriam-wedding/">
   <title>Chris &amp; Miriam — 12.12.26</title>
   <script>
@@ -683,6 +687,16 @@
             <input class="text-input" id="guestName" name="guestName" autocomplete="name" placeholder="Your full name" required>
           </label>
 
+          <label class="field">
+            <span class="field-label">Email</span>
+            <input class="text-input" id="guestEmail" name="guestEmail" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" required>
+          </label>
+
+          <label class="field">
+            <span class="field-label">Phone number</span>
+            <input class="text-input" id="guestPhone" name="guestPhone" type="tel" inputmode="tel" autocomplete="tel" placeholder="Your phone number" pattern="[0-9+(). -]{7,}" title="Enter a valid phone number" required>
+          </label>
+
           <fieldset class="attendance">
             <legend>Will you be attending?</legend>
             <div class="attendance-options">
@@ -750,6 +764,8 @@
       const guestMinus = document.getElementById('guestMinus');
       const guestPlus = document.getElementById('guestPlus');
       const guestName = document.getElementById('guestName');
+      const guestEmail = document.getElementById('guestEmail');
+      const guestPhone = document.getElementById('guestPhone');
       const guestMessage = document.getElementById('guestMessage');
       const shareStatus = document.getElementById('shareStatus');
       const copyBox = document.getElementById('copyBox');
@@ -1014,18 +1030,12 @@
       }
 
       async function shareWeddingInvitation() {
-        const invitationUrl = window.location.href.split('#')[0].split('?')[0];
-        const caption = `Chris & Miriam invite you to celebrate their wedding on Saturday, 12 December 2026 at Sheraton Hotel, Makurdi.${invitationUrl.startsWith('http') ? `\n\nOpen the invitation: ${invitationUrl}` : ''}`;
+        const invitationUrl = 'https://chrisdelzark.github.io/chris-miriam-wedding/';
+        const shareText = 'Chris & Miriam invite you to celebrate their wedding on Saturday, 12 December 2026 at Sheraton Hotel, Makurdi.';
+        const caption = `${shareText}\n\nOpen the invitation: ${invitationUrl}`;
         if (navigator.share) {
           try {
-            const response = await fetch('assets/whatsapp-preview-sealed.png');
-            const imageBlob = await response.blob();
-            const envelopeImage = new File([imageBlob],'chris-miriam-wedding-invitation.png',{type:imageBlob.type||'image/png'});
-            if (navigator.canShare && navigator.canShare({files:[envelopeImage]})) {
-              await navigator.share({title:'Chris & Miriam — 12.12.26',text:caption,files:[envelopeImage]});
-              return;
-            }
-            await navigator.share({title:'Chris & Miriam — 12.12.26',text:caption,...(invitationUrl.startsWith('http') ? {url:invitationUrl} : {})});
+            await navigator.share({title:'Chris & Miriam — 12.12.26',text:shareText,url:invitationUrl});
             return;
           } catch (error) {
             if (error && error.name==='AbortError') return;
@@ -1039,7 +1049,7 @@
         if (!rsvpForm.reportValidity()) return;
         const attendance = new FormData(rsvpForm).get('attendance');
         const message = guestMessage.value.trim();
-        const lines = ['RSVP — Chris & Miriam','Saturday, 12 December 2026','',`Name: ${guestName.value.trim()}`,`Response: ${attendance}`,`Guests: ${guests}`];
+        const lines = ['RSVP — Chris & Miriam','Saturday, 12 December 2026','',`Name: ${guestName.value.trim()}`,`Email: ${guestEmail.value.trim()}`,`Phone: ${guestPhone.value.trim()}`,`Response: ${attendance}`,`Guests: ${guests}`];
         if (message) lines.push(`Message: ${message}`);
         const text = lines.join('\n');
         shareStatus.textContent = '';
