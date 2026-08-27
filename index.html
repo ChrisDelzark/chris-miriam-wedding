@@ -1,0 +1,1115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#120504">
+  <meta name="description" content="The wedding invitation of Chris and Miriam — 12 December 2026.">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Chris &amp; Miriam — 12.12.26">
+  <meta property="og:description" content="Together with their families, Chris and Miriam invite you to celebrate with them on 12 December 2026.">
+  <meta property="og:url" content="https://chrisdelzark.github.io/chris-miriam-wedding/">
+  <meta property="og:image" content="https://chrisdelzark.github.io/chris-miriam-wedding/assets/whatsapp-preview-sealed.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="A closed oxblood and gold invitation for Chris and Miriam — 12 December 2026">
+  <link rel="canonical" href="https://chrisdelzark.github.io/chris-miriam-wedding/">
+  <title>Chris &amp; Miriam — 12.12.26</title>
+  <script>
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    window.scrollTo(0,0);
+  </script>
+  <style>
+    :root {
+      color-scheme: dark;
+      --night: #080201;
+      --oxblood: #3d0b0c;
+      --gold: #d9a84c;
+      --gold-bright: #f0ce83;
+      --ivory: #f5e9d6;
+      --muted: #c5a77d;
+      --serif: Didot, "Bodoni 72", "Bodoni MT", "Times New Roman", serif;
+      --frame-w: min(100vw, 430px);
+      --env-w: min(calc(var(--frame-w) - 24px), 396px, calc(72svh * 1.34));
+      --card-w: min(calc(var(--frame-w) - 70px), 340px, calc((100svh - 176px) * .6667));
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--night); scroll-behavior: auto; scrollbar-width: none; }
+    html::-webkit-scrollbar { width: 0; height: 0; }
+
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      background:
+        radial-gradient(circle at 78% 4%, rgba(113,43,19,.26), transparent 31%),
+        radial-gradient(circle at 12% 68%, rgba(75,15,15,.22), transparent 36%),
+        linear-gradient(150deg, #150605 0%, var(--night) 53%, #140504 100%);
+      color: var(--ivory);
+      font-family: var(--serif);
+      -webkit-font-smoothing: antialiased;
+      touch-action: manipulation;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: -3;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(90deg, rgba(255,255,255,.008) 0 1px, transparent 1px 5px),
+        repeating-linear-gradient(0deg, rgba(255,255,255,.006) 0 1px, transparent 1px 6px);
+      opacity: .32;
+      mix-blend-mode: soft-light;
+    }
+
+    main {
+      position: relative;
+      width: var(--frame-w);
+      margin: 0 auto;
+      overflow: clip;
+      background:
+        radial-gradient(circle at 88% 4%,rgba(107,37,20,.14),transparent 28%),
+        linear-gradient(165deg,rgba(24,6,5,.36),rgba(7,2,1,.18));
+      box-shadow: 0 0 100px rgba(0,0,0,.46);
+    }
+
+    button, input, textarea { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+
+    .story { position: relative; height: 460svh; }
+
+    .sticky-stage {
+      position: sticky;
+      top: 0;
+      height: 100svh;
+      min-height: 560px;
+      overflow: hidden;
+      perspective: 1800px;
+      isolation: isolate;
+    }
+
+    .sticky-stage::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 30;
+      pointer-events: none;
+      box-shadow: inset 0 0 18vmax rgba(0,0,0,.72);
+    }
+
+    .light-beam {
+      position: absolute;
+      z-index: -2;
+      width: 44vw;
+      height: 140vh;
+      top: -42vh;
+      right: -3vw;
+      opacity: .17;
+      transform: rotate(22deg);
+      background: linear-gradient(90deg, transparent, rgba(231,169,77,.15), rgba(255,224,160,.055), transparent);
+      filter: blur(26px);
+      pointer-events: none;
+    }
+
+    .particles { position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+    .particle {
+      position: absolute;
+      width: var(--size);
+      height: var(--size);
+      left: var(--left);
+      top: 108%;
+      border-radius: 50%;
+      background: var(--gold-bright);
+      opacity: 0;
+      box-shadow: 0 0 8px rgba(235,178,75,.55);
+      animation: drift var(--duration) linear var(--delay) infinite;
+    }
+    @keyframes drift {
+      0% { transform: translate3d(0,0,0) scale(.7); opacity: 0; }
+      13% { opacity: var(--opacity); }
+      84% { opacity: calc(var(--opacity) * .7); }
+      100% { transform: translate3d(var(--sway),-120svh,0) scale(1.1); opacity: 0; }
+    }
+
+    /* Keep the major layers in a predictable painter's order. The flap and
+       invitation retain their own local 3D contexts for their rotations. */
+    .motion-stage { position: absolute; inset: 0; transform-style: flat; }
+    html:not(.invitation-ready) .motion-stage,
+    html:not(.invitation-ready) .opening-controls { opacity: 0 !important; }
+    html.invitation-ready .motion-stage { transition: opacity .42s ease; }
+
+    .env-layer {
+      --env-blur: 0px;
+      --env-brightness: 1;
+      position: absolute;
+      left: 50%;
+      top: 44%;
+      width: var(--env-w);
+      aspect-ratio: 4 / 3;
+      transform: translate(-50%,-50%);
+      transform-origin: 50% 50%;
+      will-change: transform, opacity, filter;
+      filter: blur(var(--env-blur)) brightness(var(--env-brightness));
+      pointer-events: none;
+    }
+
+    .env-base { z-index: 1; background: url("assets/mobile-envelope.png") center 48.75% / 134.5% 228.7% no-repeat; }
+    .env-base::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(118deg,rgba(255,234,189,.05),transparent 25%,transparent 68%,rgba(255,184,92,.055)),
+        radial-gradient(circle at 72% 12%,rgba(255,218,158,.08),transparent 28%);
+      mix-blend-mode: screen;
+    }
+    .env-base::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      left: 7%;
+      right: 7%;
+      bottom: -21px;
+      height: 38px;
+      border-radius: 50%;
+      background: radial-gradient(ellipse,rgba(0,0,0,.78),rgba(0,0,0,0) 70%);
+      filter: blur(10px);
+      opacity: .82;
+    }
+
+    .env-inside {
+      z-index: 2;
+      clip-path: polygon(0 0,100% 0,49.8% 91%);
+      background:
+        repeating-linear-gradient(90deg, transparent 0 13px, rgba(100,25,26,.22) 13px 15px),
+        linear-gradient(160deg,#2f090a,#100202 72%);
+      box-shadow: inset 0 18px 40px rgba(0,0,0,.58);
+    }
+
+    .env-pocket {
+      z-index: 4;
+      clip-path: polygon(0 0,49.8% 91%,100% 0,100% 100%,0 100%);
+      background: url("assets/mobile-envelope.png") center 48.75% / 134.5% 228.7% no-repeat;
+      filter: drop-shadow(0 -1px 0 rgba(235,183,92,.22)) blur(var(--env-blur)) brightness(var(--env-brightness));
+    }
+    .env-pocket::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(0 0,49.8% 91%,100% 0,100% 100%,0 100%);
+      background: linear-gradient(108deg,transparent 16%,rgba(255,221,157,.08) 38%,transparent 55%,rgba(255,193,96,.06) 82%,transparent);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+
+    .env-flap { z-index: 5; transform-style: preserve-3d; }
+    .flap-rotator {
+      position: absolute;
+      inset: 0;
+      transform-origin: 50% 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+    }
+    .flap-face {
+      position: absolute;
+      inset: 0;
+      clip-path: polygon(0 0,100% 0,49.8% 91%);
+      backface-visibility: visible;
+      -webkit-backface-visibility: visible;
+    }
+    .flap-front {
+      background: url("assets/mobile-envelope.png") center 48.75% / 134.5% 228.7% no-repeat;
+    }
+    .flap-front::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(126deg,transparent 22%,rgba(255,231,179,.08) 45%,transparent 62%);
+      mix-blend-mode: screen;
+      pointer-events: none;
+    }
+    .flap-rotator.is-back .flap-front {
+      background:
+        repeating-linear-gradient(90deg, transparent 0 13px, rgba(24,0,0,.28) 13px 16px),
+        repeating-linear-gradient(0deg, transparent 0 23px, rgba(236,169,69,.04) 23px 25px),
+        linear-gradient(155deg,#611719,#35090a);
+      box-shadow: inset 0 0 0 1px rgba(230,176,83,.28);
+    }
+
+    .seal {
+      position: absolute;
+      z-index: 3;
+      left: 49.8%;
+      top: 91%;
+      width: clamp(62px,18%,82px);
+      aspect-ratio: 1;
+      transform: translate(-50%,-50%);
+      filter: drop-shadow(0 8px 9px rgba(0,0,0,.46)) drop-shadow(0 0 7px rgba(229,169,68,.16));
+      pointer-events: none;
+      will-change: opacity;
+    }
+    .seal::after {
+      content: "";
+      position: absolute;
+      inset: 11%;
+      border-radius: 50%;
+      background: linear-gradient(115deg,transparent 30%,rgba(255,250,215,.58) 48%,transparent 62%);
+      mix-blend-mode: screen;
+      opacity: .28;
+      animation: sealGleam 3.4s ease-in-out infinite;
+    }
+    @keyframes sealGleam { 0%,55%,100% { transform:translateX(-34%); opacity:0; } 70% { opacity:.36; } 88% { transform:translateX(34%); opacity:0; } }
+    .seal-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .card-button {
+      position: absolute;
+      z-index: 3;
+      left: 50%;
+      top: 44%;
+      width: var(--card-w);
+      aspect-ratio: 2 / 3;
+      padding: 0;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      opacity: 0;
+      transform: translate(-50%,-50%) translateY(120px) scale(1);
+      transform-style: preserve-3d;
+      filter: drop-shadow(0 30px 34px rgba(0,0,0,.6));
+      will-change: transform, opacity, clip-path;
+      cursor: default;
+      outline: none;
+    }
+    .card-button.is-ready { cursor: default; }
+    .card-button:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 7px; }
+    .card-button::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 4;
+      border-radius: 3px;
+      pointer-events: none;
+      background: linear-gradient(110deg,transparent 28%,rgba(255,244,211,.03) 42%,rgba(255,226,155,.35) 49%,rgba(255,255,255,.06) 55%,transparent 68%);
+      background-size: 250% 100%;
+      background-position: 160% 0;
+      mix-blend-mode: screen;
+      opacity: 0;
+    }
+    .card-button.is-ready::after { animation: foilSweep 5.8s ease-in-out 1s infinite; }
+    @keyframes foilSweep {
+      0%,67% { background-position:160% 0; opacity:0; }
+      73% { opacity:.72; }
+      89%,100% { background-position:-70% 0; opacity:0; }
+    }
+
+    .card {
+      position: absolute;
+      inset: 0;
+      transform-style: preserve-3d;
+      will-change: transform;
+      border-radius: 3px;
+      background: linear-gradient(90deg,#784610,#f4d28b 48%,#825019);
+    }
+    .card-face {
+      position: absolute;
+      inset: 0;
+      margin: 0;
+      overflow: hidden;
+      border-radius: 3px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      background: var(--oxblood);
+      box-shadow: 0 0 0 1px rgba(230,181,91,.34),inset 0 0 0 1px rgba(255,255,255,.055),inset 0 0 24px rgba(33,4,4,.22);
+      will-change: opacity;
+    }
+    .card-face::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(0deg,rgba(255,255,255,.013) 0 1px,transparent 1px 4px),
+        linear-gradient(118deg,transparent 28%,rgba(255,238,201,.055) 46%,transparent 62%);
+      mix-blend-mode: soft-light;
+    }
+    .card-back { opacity: 0; }
+    .card-face img { display:block; width:100%; height:100%; object-fit:cover; user-select:none; -webkit-user-drag:none; }
+
+    .opening-controls,
+    .final-actions {
+      position: absolute;
+      z-index: 16;
+      left: 50%;
+      bottom: max(24px,calc(env(safe-area-inset-bottom) + 16px));
+      display: grid;
+      justify-items: center;
+      gap: 12px;
+      width: min(92%,360px);
+      transform: translateX(-50%);
+      will-change: transform, opacity;
+    }
+    .final-actions { opacity:0; transform:translate(-50%,18px); pointer-events:none; }
+    .final-actions.is-visible { pointer-events:auto; }
+    .action-switch {
+      display: grid;
+      place-items: center;
+      width: 100%;
+      min-height: 54px;
+      transition: opacity .28s ease,transform .28s ease;
+    }
+    .action-switch > * { grid-area: 1 / 1; }
+    .details-action { transition: opacity .3s ease,transform .3s ease,background .25s ease; }
+    .back-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      width: 100%;
+      opacity: 0;
+      transform: translateY(8px) scale(.98);
+      pointer-events: none;
+      transition: opacity .34s ease,transform .34s ease;
+    }
+    .back-actions .control { min-width: 0; width: 100%; padding-inline: 16px; }
+    .final-actions.show-details .details-action {
+      opacity: 0;
+      transform: translateY(-7px) scale(.98);
+      pointer-events: none;
+    }
+    .final-actions.show-details .back-actions {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      pointer-events: auto;
+    }
+    .final-actions.is-flipping .action-switch {
+      opacity: 0;
+      transform: translateY(8px) scale(.98);
+      pointer-events: none;
+    }
+
+    .control {
+      min-height: 54px;
+      padding: 0 30px;
+      border: 1px solid rgba(229,184,94,.92);
+      border-radius: 999px;
+      background: rgba(39,7,7,.72);
+      color: var(--gold-bright);
+      font-family: var(--serif);
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      box-shadow: 0 14px 34px rgba(0,0,0,.34),inset 0 0 0 1px rgba(255,255,255,.025);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition: transform .25s ease,background .25s ease;
+    }
+    .control:hover { transform:translateY(-2px); background:rgba(86,22,21,.82); }
+    .control:active { transform:scale(.98); }
+    .control:focus-visible { outline:2px solid var(--ivory); outline-offset:3px; }
+    .control--gold {
+      min-width: 190px;
+      border-color: var(--gold-bright);
+      background: linear-gradient(135deg,#b77f2d,#f0ce82 48%,#b67d2b);
+      color: #2a0807;
+      box-shadow: 0 14px 38px rgba(185,119,35,.2),inset 0 1px 0 rgba(255,255,255,.44);
+    }
+
+    .scroll-cue { display:grid; justify-items:center; gap:8px; margin:0; color:rgba(241,207,145,.64); font-size:9px; letter-spacing:.21em; text-transform:uppercase; }
+    .scroll-line { width:1px; height:28px; background:linear-gradient(var(--gold),transparent); animation:breathe 1.8s ease-in-out infinite; }
+    @keyframes breathe { 0%,100% { opacity:.35; transform:scaleY(.72); } 50% { opacity:1; transform:scaleY(1); } }
+    .final-label { margin:0; color:rgba(245,221,176,.72); font-size:9px; letter-spacing:.2em; text-transform:uppercase; }
+
+    .share-invitation {
+      position: fixed;
+      z-index: 45;
+      top: max(16px,calc(env(safe-area-inset-top) + 10px));
+      right: max(16px,calc((100vw - 430px)/2 + 16px),calc(env(safe-area-inset-right) + 12px));
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+      padding: 0 15px;
+      border: 1px solid rgba(229,184,94,.64);
+      border-radius: 999px;
+      background: rgba(36,7,7,.7);
+      color: var(--gold-bright);
+      font-family: var(--serif);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      opacity: 0;
+      transform: translateY(-8px);
+      pointer-events: none;
+      box-shadow: 0 12px 28px rgba(0,0,0,.3);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      transition: background .25s ease;
+      will-change: transform,opacity;
+    }
+    .share-invitation.is-visible { pointer-events:auto; }
+    .share-invitation svg { width:17px; height:17px; }
+    .share-invitation:hover { background:rgba(84,21,21,.84); }
+    .share-invitation:focus-visible { outline:2px solid var(--ivory); outline-offset:3px; }
+
+    .rsvp-section {
+      position: relative;
+      z-index: 5;
+      min-height: 100svh;
+      display: none;
+      place-items: start center;
+      padding: clamp(64px,10svh,110px) 18px calc(42px + env(safe-area-inset-bottom));
+      background:
+        radial-gradient(circle at 50% 0,rgba(113,33,27,.2),transparent 42%),
+        linear-gradient(180deg,#100302,#260707 44%,#100302);
+    }
+    body.details-unlocked .rsvp-section { display: grid; }
+    .rsvp-section::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(45deg,rgba(255,255,255,.01) 0 1px,transparent 1px 8px),
+        repeating-linear-gradient(-45deg,rgba(237,174,76,.008) 0 1px,transparent 1px 8px);
+    }
+    .rsvp-panel {
+      position: relative;
+      width: min(100%,680px);
+      padding: clamp(26px,6vw,48px);
+      border: 1px solid rgba(218,168,79,.72);
+      border-radius: 28px;
+      background: linear-gradient(165deg,rgba(77,16,17,.96),rgba(35,6,6,.98) 72%);
+      box-shadow: 0 30px 72px rgba(0,0,0,.44),inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 42px;
+      margin: -10px 0 10px -8px;
+      padding: 0 10px;
+      border: 0;
+      background: transparent;
+      color: rgba(240,207,145,.72);
+      font-family: var(--serif);
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .back-link svg { width:16px; height:16px; }
+    .back-link:hover { color:var(--gold-bright); }
+    .back-link:focus-visible { outline:2px solid var(--ivory); border-radius:999px; }
+    .rsvp-title { margin:0 0 30px; color:var(--gold-bright); font-size:clamp(30px,7vw,44px); font-weight:400; letter-spacing:.18em; text-align:center; text-indent:.18em; }
+    .form-grid { display:grid; gap:20px; }
+    .field { display:grid; gap:8px; }
+    .field-label,.attendance legend { color:var(--gold-bright); font-size:12px; font-weight:600; letter-spacing:.16em; line-height:1.4; text-transform:uppercase; }
+    .text-input,.message-input {
+      width:100%;
+      border:1px solid rgba(216,164,76,.44);
+      border-radius:10px;
+      background:rgba(18,3,3,.44);
+      color:var(--ivory);
+      font-family:var(--serif);
+      font-size:16px;
+      line-height:1.4;
+      outline:none;
+      transition:border-color .2s ease,box-shadow .2s ease;
+    }
+    .text-input { height:54px; padding:0 15px; }
+    .message-input { min-height:96px; padding:14px 15px; resize:vertical; }
+    .text-input::placeholder,.message-input::placeholder { color:rgba(224,196,156,.42); }
+    .text-input:focus,.message-input:focus { border-color:var(--gold-bright); box-shadow:0 0 0 3px rgba(216,164,76,.13); }
+    .attendance { display:grid; gap:9px; margin:0; padding:0; border:0; }
+    .attendance-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .radio-choice {
+      position:relative;
+      display:flex;
+      align-items:center;
+      min-height:58px;
+      padding:11px 12px 11px 43px;
+      border:1px solid rgba(216,164,76,.42);
+      border-radius:10px;
+      color:#e6c78e;
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:.08em;
+      line-height:1.35;
+      text-transform:uppercase;
+      cursor:pointer;
+    }
+    .radio-choice input { position:absolute; opacity:0; }
+    .radio-mark { position:absolute; left:14px; width:18px; height:18px; border:1px solid var(--gold-bright); border-radius:50%; }
+    .radio-choice input:checked + .radio-mark { box-shadow:inset 0 0 0 4px #3b0b0b; background:var(--gold-bright); }
+    .radio-choice:has(input:checked) { border-color:var(--gold-bright); background:rgba(190,126,39,.12); }
+    .radio-choice:has(input:focus-visible) { outline:2px solid var(--ivory); outline-offset:2px; }
+    .guest-stepper { display:grid; grid-template-columns:56px 1fr 56px; min-height:54px; overflow:hidden; border:1px solid rgba(216,164,76,.44); border-radius:10px; background:rgba(18,3,3,.44); }
+    .stepper-button { border:0; background:rgba(98,28,26,.35); color:var(--gold-bright); font-family:Georgia,serif; font-size:26px; cursor:pointer; }
+    .stepper-button:first-child { border-right:1px solid rgba(216,164,76,.32); }
+    .stepper-button:last-child { border-left:1px solid rgba(216,164,76,.32); }
+    .stepper-button:hover { background:rgba(151,63,47,.34); }
+    .stepper-button:disabled { opacity:.34; background:rgba(49,13,13,.3); cursor:not-allowed; }
+    .stepper-button:focus-visible { outline:2px solid var(--ivory); outline-offset:-4px; }
+    .guest-count { display:grid; place-items:center; color:var(--ivory); font-size:20px; }
+    .submit-rsvp {
+      width:100%;
+      min-height:58px;
+      border:1px solid var(--gold-bright);
+      border-radius:10px;
+      background:linear-gradient(135deg,#b77f2d,#f1cf83 48%,#ad7222);
+      color:#2b0908;
+      font-family:var(--serif);
+      font-size:14px;
+      font-weight:700;
+      letter-spacing:.18em;
+      text-transform:uppercase;
+      box-shadow:0 12px 26px rgba(172,105,31,.17),inset 0 1px 0 rgba(255,255,255,.48);
+      cursor:pointer;
+    }
+    .submit-rsvp:hover { filter:brightness(1.06); }
+    .submit-rsvp:active { transform:scale(.99); }
+    .submit-rsvp:focus-visible { outline:2px solid var(--ivory); outline-offset:3px; }
+    .share-status { min-height:21px; margin:-5px 0 0; color:var(--muted); font-family:system-ui,sans-serif; font-size:13px; line-height:1.5; text-align:center; }
+    .copy-box { width:100%; min-height:120px; padding:12px; border:1px solid rgba(216,164,76,.44); border-radius:10px; background:rgba(10,2,2,.55); color:var(--ivory); font-family:system-ui,sans-serif; font-size:13px; line-height:1.5; resize:none; }
+
+    @media (max-width:540px) {
+      .control { min-height:50px; padding:0 22px; font-size:11px; }
+      .opening-controls,.final-actions { bottom:max(20px,calc(env(safe-area-inset-bottom) + 12px)); }
+      .attendance-options { grid-template-columns:1fr; }
+      .rsvp-panel { padding:24px 18px 28px; border-radius:24px; }
+      .rsvp-title { margin-bottom:24px; }
+    }
+
+    @media (max-height:680px) {
+      :root {
+        --env-w:min(calc(var(--frame-w) - 34px),calc(66svh * 1.34));
+        --card-w:min(calc(var(--frame-w) - 92px),300px,calc((100svh - 116px) * .6667));
+      }
+      .env-layer,.card-button { top:43%; }
+      .control { min-height:46px; }
+      .final-label { display:none; }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
+      .particle { display:none; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <section class="story" id="story" aria-label="Animated wedding invitation">
+      <div class="sticky-stage">
+        <div class="light-beam" aria-hidden="true"></div>
+        <div class="particles" id="particles" aria-hidden="true"></div>
+
+        <div class="motion-stage">
+          <div class="env-layer env-base" aria-hidden="true"></div>
+          <div class="env-layer env-inside" aria-hidden="true"></div>
+
+          <div class="card-button" id="cardButton" role="img" aria-label="Wedding invitation card">
+            <span class="card" id="card">
+              <span class="card-face card-front">
+                <img src="assets/invitation-front.png" alt="Front of Chris and Miriam's wedding invitation, dated 12 December 2026" draggable="false">
+              </span>
+              <span class="card-face card-back">
+                <img src="assets/invitation-back.png" alt="Wedding details: Sheraton Hotel Makurdi, white wedding at 7 AM and traditional wedding reception at 2 PM" draggable="false">
+              </span>
+            </span>
+          </div>
+
+          <div class="env-layer env-pocket" aria-hidden="true"></div>
+          <div class="env-layer env-flap" aria-hidden="true">
+            <div class="flap-rotator" id="flapRotator">
+              <div class="flap-face flap-front"></div>
+              <span class="seal" id="seal">
+                <img class="seal-image" src="assets/wax-seal.png" alt="" draggable="false">
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="opening-controls" id="openingControls">
+          <button class="control" id="openAction" type="button">Open invitation</button>
+          <p class="scroll-cue"><span class="scroll-line" aria-hidden="true"></span>or scroll through invitation</p>
+        </div>
+
+        <div class="final-actions" id="finalActions">
+          <p class="final-label">Scroll for details or tap below</p>
+          <div class="action-switch">
+            <button class="control control--gold details-action" id="detailsAction" type="button">View details</button>
+            <div class="back-actions" id="backActions" aria-hidden="true">
+              <button class="control" id="frontAction" type="button">View front</button>
+              <button class="control control--gold" id="rsvpJump" type="button">RSVP</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <button class="share-invitation" id="shareInvitation" type="button" aria-label="Share this invitation on WhatsApp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M20 11.3a7.7 7.7 0 0 1-8 7.7 8.5 8.5 0 0 1-3.3-.7L4 20l1.6-4.4A7.7 7.7 0 1 1 20 11.3Z"/>
+        <path d="M8.3 9.1c.9 2.4 2.3 3.8 4.7 4.7M13.8 13.1l1-.8c.3-.2.6-.2.9 0l1.2.8M8.9 9.9l-.8-1.2c-.2-.3-.2-.6 0-.9l.8-1"/>
+      </svg>
+      Share
+    </button>
+
+    <section class="rsvp-section" id="rsvp" aria-labelledby="rsvpTitle" aria-hidden="true">
+      <div class="rsvp-panel">
+        <button class="back-link" id="backToInvitation" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M15 18l-6-6 6-6"/><path d="M9 12h10"/>
+          </svg>
+          Back to invitation
+        </button>
+        <h2 class="rsvp-title" id="rsvpTitle">RSVP</h2>
+
+        <form class="form-grid" id="rsvpForm">
+          <label class="field">
+            <span class="field-label">Name</span>
+            <input class="text-input" id="guestName" name="guestName" autocomplete="name" placeholder="Your full name" required>
+          </label>
+
+          <fieldset class="attendance">
+            <legend>Will you be attending?</legend>
+            <div class="attendance-options">
+              <label class="radio-choice">
+                <input type="radio" name="attendance" value="Joyfully accepts" required>
+                <span class="radio-mark" aria-hidden="true"></span>
+                Joyfully accepts
+              </label>
+              <label class="radio-choice">
+                <input type="radio" name="attendance" value="Regretfully declines" required>
+                <span class="radio-mark" aria-hidden="true"></span>
+                Regretfully declines
+              </label>
+            </div>
+          </fieldset>
+
+          <div class="field">
+            <span class="field-label">Number of guests</span>
+            <div class="guest-stepper">
+              <button class="stepper-button" id="guestMinus" type="button" aria-label="Decrease number of guests">−</button>
+              <output class="guest-count" id="guestCount" aria-live="polite">1</output>
+              <button class="stepper-button" id="guestPlus" type="button" aria-label="Increase number of guests">+</button>
+            </div>
+          </div>
+
+          <label class="field">
+            <span class="field-label">Message <span aria-hidden="true">(optional)</span></span>
+            <textarea class="message-input" id="guestMessage" name="guestMessage" placeholder="Send a message to the couple"></textarea>
+          </label>
+
+          <button class="submit-rsvp" type="submit">Share RSVP</button>
+          <p class="share-status" id="shareStatus" aria-live="polite"></p>
+          <textarea class="copy-box" id="copyBox" aria-label="RSVP message ready to copy" readonly hidden></textarea>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <noscript>This animated invitation needs JavaScript enabled to open and reveal the RSVP.</noscript>
+
+  <script>
+    (() => {
+      const story = document.getElementById('story');
+      const envLayers = [...document.querySelectorAll('.env-layer')];
+      const envFlap = document.querySelector('.env-flap');
+      const envPocket = document.querySelector('.env-pocket');
+      const flapRotator = document.getElementById('flapRotator');
+      const seal = document.getElementById('seal');
+      const cardButton = document.getElementById('cardButton');
+      const card = document.getElementById('card');
+      const cardFront = document.querySelector('.card-front');
+      const cardBack = document.querySelector('.card-back');
+      const openingControls = document.getElementById('openingControls');
+      const openAction = document.getElementById('openAction');
+      const finalActions = document.getElementById('finalActions');
+      const detailsAction = document.getElementById('detailsAction');
+      const frontAction = document.getElementById('frontAction');
+      const backActions = document.getElementById('backActions');
+      const rsvpJump = document.getElementById('rsvpJump');
+      const rsvpSection = document.getElementById('rsvp');
+      const backToInvitation = document.getElementById('backToInvitation');
+      const shareInvitation = document.getElementById('shareInvitation');
+      const rsvpForm = document.getElementById('rsvpForm');
+      const guestCount = document.getElementById('guestCount');
+      const guestMinus = document.getElementById('guestMinus');
+      const guestPlus = document.getElementById('guestPlus');
+      const guestName = document.getElementById('guestName');
+      const guestMessage = document.getElementById('guestMessage');
+      const shareStatus = document.getElementById('shareStatus');
+      const copyBox = document.getElementById('copyBox');
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      let guests = 1;
+      let currentProgress = 0;
+      let visualFlip = 0;
+      let manualFlip = null;
+      let ticking = false;
+      let autoFrame = 0;
+      let manualFlipFrame = 0;
+      let openingStarted = false;
+
+      const frontStopProgress = .74;
+      const scrollFlipStart = .80;
+      const scrollFlipEnd = .94;
+
+      const clamp = value => Math.min(1,Math.max(0,value));
+      const phase = (value,start,end) => clamp((value-start)/(end-start));
+      const smooth = value => value*value*(3-2*value);
+      const easeInOutQuad = value => value<.5 ? 2*value*value : 1-Math.pow(-2*value+2,2)/2;
+      const easeOutBack = value => {
+        const strength = 1.05;
+        const curve = strength+1;
+        return 1+curve*Math.pow(value-1,3)+strength*Math.pow(value-1,2);
+      };
+      const mix = (from,to,value) => from+(to-from)*value;
+
+      function createParticles() {
+        const host = document.getElementById('particles');
+        const total = 20;
+        for (let i=0;i<total;i+=1) {
+          const particle = document.createElement('i');
+          particle.className = 'particle';
+          particle.style.setProperty('--size',`${(Math.random()*2.2+.7).toFixed(1)}px`);
+          particle.style.setProperty('--left',`${(Math.random()*100).toFixed(1)}%`);
+          particle.style.setProperty('--duration',`${(Math.random()*11+14).toFixed(1)}s`);
+          particle.style.setProperty('--delay',`${(Math.random()*-18).toFixed(1)}s`);
+          particle.style.setProperty('--opacity',(Math.random()*.3+.12).toFixed(2));
+          particle.style.setProperty('--sway',`${(Math.random()*120-60).toFixed(0)}px`);
+          host.appendChild(particle);
+        }
+      }
+
+      function storyYAt(progress) {
+        const distance = Math.max(1,story.offsetHeight-window.innerHeight);
+        return story.offsetTop+distance*progress;
+      }
+      function frontAnchor() {
+        return storyYAt(frontStopProgress);
+      }
+      function scrollProgress() {
+        const distance = Math.max(1,story.offsetHeight-window.innerHeight);
+        return clamp((window.scrollY-story.offsetTop)/distance);
+      }
+
+      function applyMotion(progress,scrollFlip = 0) {
+        currentProgress = progress;
+        const sealFade = smooth(phase(progress,.055,.14));
+        const flapLinear = phase(progress,.09,.27);
+        const flap = easeOutBack(flapLinear);
+        const extraction = easeInOutQuad(phase(progress,.23,.48));
+        const envelopeRetreat = smooth(phase(progress,.68,.97));
+        const envelopeFade = smooth(phase(progress,.955,.995));
+        const settle = smooth(phase(progress,.82,.95));
+        const finish = smooth(phase(progress,.91,.98));
+        const introFade = 1-smooth(phase(progress,.01,.10));
+
+        seal.style.opacity = (1-sealFade).toFixed(3);
+
+        // The complete envelope retreats as one physical object. It stays at
+        // full size and travels straight down until its top edge
+        // is below the viewport; the late fade only softens the final pixels.
+        const envelopeTop = envLayers[0].offsetTop-envLayers[0].offsetHeight*.5;
+        const envelopeTravel = Math.max(460,window.innerHeight-envelopeTop+28);
+        const envelopeX = 0;
+        const envelopeY = mix(0,envelopeTravel,envelopeRetreat);
+        const envelopeZ = 0;
+        const envelopeTilt = 0;
+        const envelopeRotate = 0;
+        const envelopeScale = 1;
+        const envelopeOpacity = 1-envelopeFade;
+        const envelopeBlur = mix(0,5,envelopeFade);
+        const envelopeBrightness = mix(1,.72,envelopeFade);
+        envLayers.forEach(layer => {
+          layer.style.transform = `translate(-50%,-50%) perspective(1400px) translate3d(${envelopeX.toFixed(2)}px,${envelopeY.toFixed(2)}px,${envelopeZ.toFixed(2)}px) rotateX(${envelopeTilt.toFixed(2)}deg) rotateZ(${envelopeRotate.toFixed(2)}deg) scale(${envelopeScale.toFixed(4)})`;
+          layer.style.opacity = envelopeOpacity.toFixed(3);
+          layer.style.setProperty('--env-blur',`${envelopeBlur.toFixed(2)}px`);
+          layer.style.setProperty('--env-brightness',envelopeBrightness.toFixed(3));
+        });
+        flapRotator.classList.toggle('is-back',flap>.5);
+        flapRotator.style.transform = `perspective(1200px) rotateX(${(-132*flap).toFixed(2)}deg)`;
+        envFlap.style.zIndex = flap>.52 ? '2' : '5';
+
+        // The full-size invitation is already seated immediately beneath the
+        // opening before the flap moves, so the envelope can never appear
+        // empty. After the flap reveals it, lift the card to the intended hold
+        // position with the pocket's V-point at exactly 75% of its height.
+        const pocketPointRatio = .91;
+        const revealDepthRatio = .75;
+        const cardRevealY = envLayers[0].offsetHeight*(pocketPointRatio-.5)
+          - cardButton.offsetHeight*(revealDepthRatio-.5);
+        const cardStartY = (cardButton.offsetHeight-envLayers[0].offsetHeight)*.5+12;
+        const cardY = mix(mix(cardStartY,cardRevealY,extraction),-34,settle);
+        const cardRoll = 0;
+        cardButton.style.transform = `translate(-50%,-50%) translate3d(0,${cardY.toFixed(2)}px,0) rotateZ(${cardRoll.toFixed(2)}deg) scale(1)`;
+        cardButton.style.opacity = '1';
+
+        // Clip the portion that is still physically below the envelope. The
+        // moving pocket supplies the V-shaped foreground mask, so the card is
+        // revealed by motion rather than by changing its dimensions.
+        const cardRect = cardButton.getBoundingClientRect();
+        const pocketRect = envPocket.getBoundingClientRect();
+        const bottomCrop = Math.min(cardButton.offsetHeight,Math.max(0,cardRect.bottom-pocketRect.bottom+2));
+        const cardClip = `inset(0 0 ${bottomCrop.toFixed(2)}px 0 round 3px)`;
+
+        // Change painter order only after the envelope's complete bounding box
+        // has cleared the card. At the same instant, remove the extraction
+        // mask entirely so it cannot crop the projected edges during a 3D
+        // flip. With no overlap, neither change can produce a visible pop.
+        const envelopeRect = envLayers[0].getBoundingClientRect();
+        const envelopeClearedCard = envelopeRect.top>=cardRect.bottom-1;
+        cardButton.style.clipPath = envelopeClearedCard ? 'none' : cardClip;
+        cardButton.style.webkitClipPath = envelopeClearedCard ? 'none' : cardClip;
+        cardButton.style.zIndex = envelopeClearedCard ? '7' : '3';
+
+        visualFlip = manualFlip === null ? scrollFlip : manualFlip;
+        if (manualFlip === null) {
+          const scrollShowsDetails = scrollFlip>.5;
+          const scrollIsFlipping = scrollFlip>.02 && scrollFlip<.98;
+          finalActions.classList.toggle('show-details',scrollShowsDetails);
+          finalActions.classList.toggle('is-flipping',scrollIsFlipping);
+          backActions.setAttribute('aria-hidden',String(!scrollShowsDetails));
+          if (scrollFlip>.88) unlockDetailsAndRsvp();
+        }
+        const flipLift = Math.sin(Math.PI*visualFlip);
+        const firstHalf = visualFlip<=.5;
+        const halfTurn = firstHalf ? smooth(visualFlip*2) : smooth((visualFlip-.5)*2);
+        const cardAngle = firstHalf ? 70*halfTurn : -70*(1-halfTurn);
+        cardFront.style.opacity = firstHalf ? '1' : '0';
+        cardBack.style.opacity = firstHalf ? '0' : '1';
+        card.style.transform = `perspective(1450px) translateZ(${(18*flipLift).toFixed(2)}px) rotateZ(${(.7*flipLift).toFixed(2)}deg) rotateY(${cardAngle.toFixed(2)}deg)`;
+        cardButton.style.filter = `drop-shadow(0 ${(mix(18,30,extraction)+8*flipLift).toFixed(1)}px ${(mix(22,38,extraction)+6*flipLift).toFixed(1)}px rgba(0,0,0,${mix(.44,.65,extraction).toFixed(3)}))`;
+
+        openingControls.style.opacity = introFade.toFixed(3);
+        openingControls.style.transform = `translate(-50%,${((1-introFade)*18).toFixed(2)}px)`;
+        openingControls.style.pointerEvents = introFade>.2 ? 'auto' : 'none';
+
+        finalActions.style.opacity = finish.toFixed(3);
+        finalActions.style.transform = `translate(-50%,${mix(18,0,finish).toFixed(2)}px)`;
+        finalActions.classList.toggle('is-visible',finish>.72);
+
+        const shareReveal = smooth(phase(progress,.9,.98));
+        shareInvitation.style.opacity = shareReveal.toFixed(3);
+        shareInvitation.style.transform = `translateY(${mix(-8,0,shareReveal).toFixed(2)}px)`;
+        shareInvitation.classList.toggle('is-visible',shareReveal>.7);
+
+        const ready = progress>.9;
+        cardButton.classList.toggle('is-ready',ready);
+        cardButton.setAttribute('aria-label',ready
+          ? (visualFlip>.5 ? 'Wedding details for Chris and Miriam.' : 'Front of Chris and Miriam’s wedding invitation.')
+          : 'Wedding invitation opening as you scroll.');
+      }
+
+      function updateFromScroll() {
+        ticking = false;
+        const rawProgress = scrollProgress();
+        if (rawProgress>.001) openingStarted = true;
+        if (manualFlip !== null && rawProgress<frontStopProgress-.03) {
+          manualFlip = null;
+          finalActions.classList.remove('show-details','is-flipping');
+          backActions.setAttribute('aria-hidden','true');
+        }
+        const motionProgress = clamp(rawProgress/frontStopProgress);
+        const scrollFlip = smooth(phase(rawProgress,scrollFlipStart,scrollFlipEnd));
+        applyMotion(motionProgress,scrollFlip);
+      }
+      function requestScrollUpdate() {
+        if (ticking) return;
+        ticking = true;
+        window.requestAnimationFrame(updateFromScroll);
+      }
+      function cancelAutoScroll() {
+        if (autoFrame) {
+          window.cancelAnimationFrame(autoFrame);
+          autoFrame = 0;
+        }
+      }
+
+      function animateOpen() {
+        cancelAutoScroll();
+        openingStarted = true;
+        const startY = window.scrollY;
+        const targetY = frontAnchor();
+        if (reducedMotion.matches) {
+          window.scrollTo(0,targetY);
+          applyMotion(1,0);
+          return;
+        }
+        const started = performance.now();
+        const duration = 5200;
+        const distance = targetY-startY;
+        function frame(now) {
+          const t = clamp((now-started)/duration);
+          const eased = t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
+          window.scrollTo(0,startY+distance*eased);
+          applyMotion(clamp(scrollProgress()/frontStopProgress),0);
+          if (t<1) autoFrame = window.requestAnimationFrame(frame);
+          else autoFrame = 0;
+        }
+        autoFrame = window.requestAnimationFrame(frame);
+      }
+
+      function unlockDetailsAndRsvp() {
+        document.body.classList.add('details-unlocked');
+        rsvpSection.setAttribute('aria-hidden','false');
+      }
+
+      function flipCardTo(to) {
+        if (currentProgress<.9) return;
+        if (manualFlipFrame) window.cancelAnimationFrame(manualFlipFrame);
+        const anchorY = frontAnchor();
+        window.scrollTo(0,anchorY);
+        const anchoredProgress = 1;
+        const from = visualFlip;
+        finalActions.classList.add('is-flipping');
+        if (reducedMotion.matches) {
+          manualFlip = to;
+          applyMotion(anchoredProgress,0);
+          finalActions.classList.toggle('show-details',to>.5);
+          finalActions.classList.remove('is-flipping');
+          backActions.setAttribute('aria-hidden',String(to<=.5));
+          if (to>.5) unlockDetailsAndRsvp();
+          return;
+        }
+        const started = performance.now();
+        const duration = 1080;
+        function frame(now) {
+          const amount = clamp((now-started)/duration);
+          window.scrollTo(0,anchorY);
+          manualFlip = mix(from,to,smooth(amount));
+          applyMotion(anchoredProgress,0);
+          if (amount<1) manualFlipFrame = window.requestAnimationFrame(frame);
+          else {
+            manualFlipFrame = 0;
+            finalActions.classList.toggle('show-details',to>.5);
+            finalActions.classList.remove('is-flipping');
+            backActions.setAttribute('aria-hidden',String(to<=.5));
+            if (to>.5) unlockDetailsAndRsvp();
+          }
+        }
+        manualFlipFrame = window.requestAnimationFrame(frame);
+      }
+
+      function updateGuestCount(delta) {
+        guests = Math.max(1,Math.min(3,guests+delta));
+        guestCount.value = String(guests);
+        guestCount.textContent = String(guests);
+        guestMinus.disabled = guests===1;
+        guestPlus.disabled = guests===3;
+      }
+
+      async function shareWeddingInvitation() {
+        const invitationUrl = window.location.href.split('#')[0].split('?')[0];
+        const caption = `Chris & Miriam invite you to celebrate their wedding on Saturday, 12 December 2026 at Sheraton Hotel, Makurdi.${invitationUrl.startsWith('http') ? `\n\nOpen the invitation: ${invitationUrl}` : ''}`;
+        if (navigator.share) {
+          try {
+            const response = await fetch('assets/whatsapp-preview-sealed.png');
+            const imageBlob = await response.blob();
+            const envelopeImage = new File([imageBlob],'chris-miriam-wedding-invitation.png',{type:imageBlob.type||'image/png'});
+            if (navigator.canShare && navigator.canShare({files:[envelopeImage]})) {
+              await navigator.share({title:'Chris & Miriam — 12.12.26',text:caption,files:[envelopeImage]});
+              return;
+            }
+            await navigator.share({title:'Chris & Miriam — 12.12.26',text:caption,...(invitationUrl.startsWith('http') ? {url:invitationUrl} : {})});
+            return;
+          } catch (error) {
+            if (error && error.name==='AbortError') return;
+          }
+        }
+        window.open(`https://wa.me/?text=${encodeURIComponent(caption)}`,'_blank','noopener,noreferrer');
+      }
+
+      async function shareRsvp(event) {
+        event.preventDefault();
+        if (!rsvpForm.reportValidity()) return;
+        const attendance = new FormData(rsvpForm).get('attendance');
+        const message = guestMessage.value.trim();
+        const lines = ['RSVP — Chris & Miriam','Saturday, 12 December 2026','',`Name: ${guestName.value.trim()}`,`Response: ${attendance}`,`Guests: ${guests}`];
+        if (message) lines.push(`Message: ${message}`);
+        const text = lines.join('\n');
+        shareStatus.textContent = '';
+        copyBox.hidden = true;
+        copyBox.value = text;
+        if (navigator.share) {
+          try {
+            await navigator.share({title:'Wedding RSVP — Chris & Miriam',text});
+            shareStatus.textContent = 'Your RSVP is ready to send.';
+            return;
+          } catch (error) {
+            if (error && error.name==='AbortError') return;
+          }
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          shareStatus.textContent = 'RSVP copied — paste it into a message to Chris or Miriam.';
+        } catch (error) {
+          copyBox.hidden = false;
+          copyBox.select();
+          shareStatus.textContent = 'Copy this RSVP and send it to Chris or Miriam.';
+        }
+      }
+
+      openAction.addEventListener('click',animateOpen);
+      detailsAction.addEventListener('click',() => flipCardTo(1));
+      frontAction.addEventListener('click',() => flipCardTo(0));
+      rsvpJump.addEventListener('click',() => rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'}));
+      backToInvitation.addEventListener('click',() => window.scrollTo({top:frontAnchor(),behavior:reducedMotion.matches?'auto':'smooth'}));
+      shareInvitation.addEventListener('click',shareWeddingInvitation);
+      guestMinus.addEventListener('click',() => updateGuestCount(-1));
+      guestPlus.addEventListener('click',() => updateGuestCount(1));
+      rsvpForm.addEventListener('submit',shareRsvp);
+      window.addEventListener('scroll',requestScrollUpdate,{passive:true});
+      window.addEventListener('resize',requestScrollUpdate,{passive:true});
+      const takeManualScrollControl = () => {
+        openingStarted = true;
+        cancelAutoScroll();
+      };
+      window.addEventListener('wheel',takeManualScrollControl,{passive:true});
+      window.addEventListener('touchstart',takeManualScrollControl,{passive:true});
+      window.addEventListener('keydown',event => {
+        if (['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(event.key)) takeManualScrollControl();
+        if (event.key==='Escape') cancelAutoScroll();
+        if (event.key==='ArrowRight' && currentProgress>.9) flipCardTo(1);
+        if (event.key==='ArrowLeft' && currentProgress>.9) flipCardTo(0);
+      });
+
+      function establishStartState(reveal = false) {
+        if (openingStarted) return;
+        cancelAutoScroll();
+        manualFlip = null;
+        document.body.classList.remove('details-unlocked');
+        rsvpSection.setAttribute('aria-hidden','true');
+        finalActions.classList.remove('show-details','is-flipping');
+        backActions.setAttribute('aria-hidden','true');
+        window.scrollTo(0,0);
+        applyMotion(0,0);
+        if (reveal) document.documentElement.classList.add('invitation-ready');
+      }
+
+      createParticles();
+      updateGuestCount(0);
+      establishStartState(false);
+      window.addEventListener('pageshow',() => {
+        establishStartState(false);
+        window.setTimeout(() => establishStartState(true),90);
+      },{once:true});
+      window.setTimeout(() => establishStartState(true),180);
+    })();
+  </script>
+</body>
+</html>
