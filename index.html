@@ -433,39 +433,6 @@
     @keyframes breathe { 0%,100% { opacity:.35; transform:scaleY(.72); } 50% { opacity:1; transform:scaleY(1); } }
     .final-label { margin:0; color:rgba(245,221,176,.72); font-size:9px; letter-spacing:.2em; text-transform:uppercase; }
 
-    .share-invitation {
-      position: fixed;
-      z-index: 45;
-      top: max(16px,calc(env(safe-area-inset-top) + 10px));
-      right: max(16px,calc((100vw - 430px)/2 + 16px),calc(env(safe-area-inset-right) + 12px));
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      min-height: 44px;
-      padding: 0 15px;
-      border: 1px solid rgba(229,184,94,.64);
-      border-radius: 999px;
-      background: rgba(36,7,7,.7);
-      color: var(--gold-bright);
-      font-family: var(--serif);
-      font-size: 10px;
-      font-weight: 600;
-      letter-spacing: .14em;
-      text-transform: uppercase;
-      opacity: 0;
-      transform: translateY(-8px);
-      pointer-events: none;
-      box-shadow: 0 12px 28px rgba(0,0,0,.3);
-      backdrop-filter: blur(12px);
-      cursor: pointer;
-      transition: background .25s ease;
-      will-change: transform,opacity;
-    }
-    .share-invitation.is-visible { pointer-events:auto; }
-    .share-invitation svg { width:17px; height:17px; }
-    .share-invitation:hover { background:rgba(84,21,21,.84); }
-    .share-invitation:focus-visible { outline:2px solid var(--ivory); outline-offset:3px; }
-
     .rsvp-section {
       position: relative;
       z-index: 5;
@@ -666,14 +633,6 @@
       </div>
     </section>
 
-    <button class="share-invitation" id="shareInvitation" type="button" aria-label="Share this invitation on WhatsApp">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-        <path d="M20 11.3a7.7 7.7 0 0 1-8 7.7 8.5 8.5 0 0 1-3.3-.7L4 20l1.6-4.4A7.7 7.7 0 1 1 20 11.3Z"/>
-        <path d="M8.3 9.1c.9 2.4 2.3 3.8 4.7 4.7M13.8 13.1l1-.8c.3-.2.6-.2.9 0l1.2.8M8.9 9.9l-.8-1.2c-.2-.3-.2-.6 0-.9l.8-1"/>
-      </svg>
-      Share
-    </button>
-
     <section class="rsvp-section" id="rsvp" aria-labelledby="rsvpTitle" aria-hidden="true">
       <div class="rsvp-panel">
         <button class="back-link" id="backToInvitation" type="button">
@@ -761,7 +720,6 @@
       const rsvpJump = document.getElementById('rsvpJump');
       const rsvpSection = document.getElementById('rsvp');
       const backToInvitation = document.getElementById('backToInvitation');
-      const shareInvitation = document.getElementById('shareInvitation');
       const rsvpForm = document.getElementById('rsvpForm');
       const guestCount = document.getElementById('guestCount');
       const guestMinus = document.getElementById('guestMinus');
@@ -925,11 +883,6 @@
         finalActions.style.transform = `translate(-50%,${mix(18,0,finish).toFixed(2)}px)`;
         finalActions.classList.toggle('is-visible',finish>.72);
 
-        const shareReveal = smooth(phase(progress,.9,.98));
-        shareInvitation.style.opacity = shareReveal.toFixed(3);
-        shareInvitation.style.transform = `translateY(${mix(-8,0,shareReveal).toFixed(2)}px)`;
-        shareInvitation.classList.toggle('is-visible',shareReveal>.7);
-
         const ready = progress>.9;
         cardButton.classList.toggle('is-ready',ready);
         cardButton.setAttribute('aria-label',ready
@@ -1054,21 +1007,6 @@
         return hasEnoughDigits;
       }
 
-      async function shareWeddingInvitation() {
-        const invitationUrl = 'https://chrisdelzark.github.io/chris-miriam-wedding/';
-        const shareText = 'Chris & Miriam invite you to celebrate their wedding on Saturday, 12 December 2026 at Sheraton Hotel, Makurdi.';
-        const caption = `${shareText}\n\nOpen the invitation: ${invitationUrl}`;
-        if (navigator.share) {
-          try {
-            await navigator.share({title:'Chris & Miriam — 12.12.26',text:shareText,url:invitationUrl});
-            return;
-          } catch (error) {
-            if (error && error.name==='AbortError') return;
-          }
-        }
-        window.open(`https://wa.me/?text=${encodeURIComponent(caption)}`,'_blank','noopener,noreferrer');
-      }
-
       async function shareRsvp(event) {
         event.preventDefault();
         validatePhone();
@@ -1105,7 +1043,6 @@
       frontAction.addEventListener('click',() => flipCardTo(0));
       rsvpJump.addEventListener('click',() => rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'}));
       backToInvitation.addEventListener('click',() => window.scrollTo({top:frontAnchor(),behavior:reducedMotion.matches?'auto':'smooth'}));
-      shareInvitation.addEventListener('click',shareWeddingInvitation);
       guestMinus.addEventListener('click',() => updateGuestCount(-1));
       guestPlus.addEventListener('click',() => updateGuestCount(1));
       attendanceInputs.forEach(input => input.addEventListener('change',() => updateAttendanceState(input.value)));
