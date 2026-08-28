@@ -373,30 +373,12 @@
     }
     .action-switch > * { grid-area: 1 / 1; }
     .details-action { transition: opacity .3s ease,transform .3s ease,background .25s ease; }
-    .back-actions {
-      display: grid;
-      grid-template-columns: minmax(0,240px);
-      justify-content: center;
-      width: 100%;
-      opacity: 0;
-      transform: translateY(8px) scale(.98);
-      pointer-events: none;
-      transition: opacity .34s ease,transform .34s ease;
-    }
-    .back-actions .control { min-width: 0; width: 100%; padding-inline: 16px; }
     .final-actions.show-details .details-action {
       opacity: 0;
       transform: translateY(-7px) scale(.98);
       pointer-events: none;
     }
-    .final-actions.show-details .back-actions {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-      pointer-events: auto;
-    }
-    .final-actions.show-details {
-      bottom: max(94px,calc(env(safe-area-inset-bottom) + 82px));
-    }
+    .final-actions.show-details { pointer-events:none; }
     .final-actions.is-flipping .action-switch {
       opacity: 0;
       transform: translateY(8px) scale(.98);
@@ -686,9 +668,6 @@
           <p class="final-label">Scroll for details or tap below</p>
           <div class="action-switch">
             <button class="control control--gold details-action" id="detailsAction" type="button">View details</button>
-            <div class="back-actions" id="backActions" aria-hidden="true">
-              <button class="control" id="frontAction" type="button">View front</button>
-            </div>
           </div>
         </div>
       </div>
@@ -788,8 +767,6 @@
       const openAction = document.getElementById('openAction');
       const finalActions = document.getElementById('finalActions');
       const detailsAction = document.getElementById('detailsAction');
-      const frontAction = document.getElementById('frontAction');
-      const backActions = document.getElementById('backActions');
       const rsvpPeek = document.getElementById('rsvpPeek');
       const rsvpSection = document.getElementById('rsvp');
       const backToInvitation = document.getElementById('backToInvitation');
@@ -863,6 +840,9 @@
       function frontAnchor() {
         return storyYAt(frontStopProgress);
       }
+      function detailsAnchor() {
+        return storyYAt(scrollFlipEnd);
+      }
       function scrollProgress() {
         const distance = Math.max(1,story.offsetHeight-window.innerHeight);
         return clamp((window.scrollY-story.offsetTop)/distance);
@@ -915,9 +895,15 @@
         const cardRevealY = envLayers[0].offsetHeight*(pocketPointRatio-.5)
           - cardButton.offsetHeight*(revealDepthRatio-.5);
         const cardStartY = (cardButton.offsetHeight-envLayers[0].offsetHeight)*.5+12;
-        const cardY = mix(mix(cardStartY,cardRevealY,extraction),-34,settle);
+        visualFlip = manualFlip === null ? scrollFlip : manualFlip;
+        const detailsFocus = smooth(phase(visualFlip,.58,.96));
+        const motionStageRect = cardButton.parentElement.getBoundingClientRect();
+        const restingCardY = mix(mix(cardStartY,cardRevealY,extraction),-34,settle)-motionStageRect.top*settle;
+        const detailsCenteredY = window.innerHeight*.5-(motionStageRect.top+cardButton.offsetTop);
+        const cardY = mix(restingCardY,detailsCenteredY,detailsFocus);
+        const cardScale = mix(1,1.09,detailsFocus);
         const cardRoll = 0;
-        cardButton.style.transform = `translate(-50%,-50%) translate3d(0,${cardY.toFixed(2)}px,0) rotateZ(${cardRoll.toFixed(2)}deg) scale(1)`;
+        cardButton.style.transform = `translate(-50%,-50%) translate3d(0,${cardY.toFixed(2)}px,0) rotateZ(${cardRoll.toFixed(2)}deg) scale(${cardScale.toFixed(4)})`;
         cardButton.style.opacity = '1';
 
         // Clip the portion that is still physically below the envelope. The
@@ -938,13 +924,11 @@
         cardButton.style.webkitClipPath = envelopeClearedCard ? 'none' : cardClip;
         cardButton.style.zIndex = envelopeClearedCard ? '7' : '3';
 
-        visualFlip = manualFlip === null ? scrollFlip : manualFlip;
         if (manualFlip === null) {
           const scrollShowsDetails = scrollFlip>.5;
           const scrollIsFlipping = scrollFlip>.02 && scrollFlip<.98;
           finalActions.classList.toggle('show-details',scrollShowsDetails);
           finalActions.classList.toggle('is-flipping',scrollIsFlipping);
-          backActions.setAttribute('aria-hidden',String(!scrollShowsDetails));
           if (scrollFlip>.88) unlockDetailsAndRsvp();
         }
         const flipLift = Math.sin(Math.PI*visualFlip);
@@ -960,9 +944,10 @@
         openingControls.style.transform = `translate(-50%,${((1-introFade)*18).toFixed(2)}px)`;
         openingControls.style.pointerEvents = introFade>.2 ? 'auto' : 'none';
 
-        finalActions.style.opacity = finish.toFixed(3);
+        const actionsVisibility = finish*(1-smooth(phase(visualFlip,.48,.82)));
+        finalActions.style.opacity = actionsVisibility.toFixed(3);
         finalActions.style.transform = `translate(-50%,${mix(18,0,finish).toFixed(2)}px)`;
-        finalActions.classList.toggle('is-visible',finish>.72);
+        finalActions.classList.toggle('is-visible',actionsVisibility>.72);
 
         const ready = progress>.9;
         cardButton.classList.toggle('is-ready',ready);
@@ -979,7 +964,6 @@
         if (manualFlip !== null && rawProgress<frontStopProgress-.03) {
           manualFlip = null;
           finalActions.classList.remove('show-details','is-flipping');
-          backActions.setAttribute('aria-hidden','true');
         }
         const motionProgress = clamp(rawProgress/frontStopProgress);
         const scrollFlip = smooth(phase(rawProgress,scrollFlipStart,scrollFlipEnd));
@@ -1039,8 +1023,12 @@
           applyMotion(anchoredProgress,0);
           finalActions.classList.toggle('show-details',to>.5);
           finalActions.classList.remove('is-flipping');
-          backActions.setAttribute('aria-hidden',String(to<=.5));
-          if (to>.5) unlockDetailsAndRsvp();
+          if (to>.5) {
+            unlockDetailsAndRsvp();
+            window.scrollTo(0,detailsAnchor());
+            manualFlip = null;
+            applyMotion(1,1);
+          }
           return;
         }
         const started = performance.now();
@@ -1055,8 +1043,12 @@
             manualFlipFrame = 0;
             finalActions.classList.toggle('show-details',to>.5);
             finalActions.classList.remove('is-flipping');
-            backActions.setAttribute('aria-hidden',String(to<=.5));
-            if (to>.5) unlockDetailsAndRsvp();
+            if (to>.5) {
+              unlockDetailsAndRsvp();
+              window.scrollTo(0,detailsAnchor());
+              manualFlip = null;
+              applyMotion(1,1);
+            }
           }
         }
         manualFlipFrame = window.requestAnimationFrame(frame);
@@ -1122,7 +1114,6 @@
 
       openAction.addEventListener('click',animateOpen);
       detailsAction.addEventListener('click',() => flipCardTo(1));
-      frontAction.addEventListener('click',() => flipCardTo(0));
       rsvpPeek.addEventListener('click',() => rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'}));
       backToInvitation.addEventListener('click',() => window.scrollTo({top:frontAnchor(),behavior:reducedMotion.matches?'auto':'smooth'}));
       guestMinus.addEventListener('click',() => updateGuestCount(-1));
@@ -1147,7 +1138,6 @@
         if (['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(event.key)) takeManualScrollControl();
         if (event.key==='Escape') cancelAutoScroll();
         if (event.key==='ArrowRight' && currentProgress>.9) flipCardTo(1);
-        if (event.key==='ArrowLeft' && currentProgress>.9) flipCardTo(0);
       });
 
       function establishStartState(reveal = false) {
@@ -1157,7 +1147,6 @@
         document.body.classList.remove('details-unlocked');
         rsvpSection.setAttribute('aria-hidden','true');
         finalActions.classList.remove('show-details','is-flipping');
-        backActions.setAttribute('aria-hidden','true');
         rsvpFormInView = false;
         syncRsvpPeek();
         window.scrollTo(0,0);
