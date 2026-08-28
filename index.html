@@ -70,8 +70,8 @@
 
     main {
       position: relative;
-      width: var(--frame-w);
-      margin: 0 auto;
+      width: 100%;
+      margin: 0;
       overflow: clip;
       background:
         radial-gradient(circle at 88% 4%,rgba(107,37,20,.14),transparent 28%),
@@ -864,13 +864,14 @@
 
       function applyMotion(progress,scrollFlip = 0) {
         currentProgress = progress;
+        const isDesktop = desktopLayout.matches;
         const sealFade = smooth(phase(progress,.055,.14));
         const flapLinear = phase(progress,.09,.27);
         const flap = easeOutBack(flapLinear);
-        const extraction = easeInOutQuad(phase(progress,.23,.48));
-        const envelopeRetreat = smooth(phase(progress,.68,.97));
-        const envelopeFade = smooth(phase(progress,.955,.995));
-        const settle = smooth(phase(progress,.82,.95));
+        const extraction = easeInOutQuad(phase(progress,.23,isDesktop ? .58 : .48));
+        const envelopeRetreat = smooth(phase(progress,isDesktop ? .36 : .68,isDesktop ? .78 : .97));
+        const envelopeFade = smooth(phase(progress,isDesktop ? .72 : .955,isDesktop ? .80 : .995));
+        const settle = smooth(phase(progress,isDesktop ? .72 : .82,isDesktop ? .92 : .95));
         const finish = smooth(phase(progress,.91,.98));
         const introFade = 1-smooth(phase(progress,.01,.10));
 
@@ -912,13 +913,18 @@
         visualFlip = manualFlip === null ? scrollFlip : manualFlip;
         const detailsCentering = phase(visualFlip,0,.96);
         const detailsScaleFocus = phase(visualFlip,.08,.98);
-        const seatedCardScale = desktopLayout.matches
-          ? Math.min(1.65,Math.max(1,envLayers[0].offsetWidth*.8/cardButton.offsetWidth))
+        const seatedCardScale = isDesktop
+          ? Math.max(1,envLayers[0].offsetWidth/cardButton.offsetWidth)
           : 1;
-        const seatedScaleRelease = smooth(phase(progress,.28,.50));
+        // On desktop the invitation remains envelope-width while it rises.
+        // Its scale-down begins only after the envelope has already retreated,
+        // making the motion read as extraction first and presentation second.
+        const seatedScaleRelease = isDesktop ? smooth(phase(progress,.60,.88)) : 1;
         const presentationScale = mix(seatedCardScale,1,seatedScaleRelease);
         const motionStageRect = cardButton.parentElement.getBoundingClientRect();
-        const restingCardY = mix(mix(cardStartY,cardRevealY,extraction),-34,settle)-motionStageRect.top*settle;
+        const restingCardY = isDesktop
+          ? mix(cardStartY,-34,extraction)-motionStageRect.top*settle
+          : mix(mix(cardStartY,cardRevealY,extraction),-34,settle)-motionStageRect.top*settle;
         const detailsCenteredY = window.innerHeight*.5-(motionStageRect.top+cardButton.offsetTop);
         const seatedTopCompensation = cardButton.offsetHeight*(presentationScale-1)*.5;
         const cardY = mix(restingCardY,detailsCenteredY,detailsCentering)+seatedTopCompensation;
