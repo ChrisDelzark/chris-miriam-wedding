@@ -83,7 +83,11 @@
     button { -webkit-tap-highlight-color: transparent; }
     [hidden] { display: none !important; }
 
-    .story { position: relative; height: 460svh; }
+    /* The motion itself still ends at 460svh. The extra 130svh keeps the
+       invitation natively sticky until the RSVP has fully covered it, which
+       avoids Safari's one-frame sticky-to-static handoff jitter. */
+    .story { position: relative; height: 590svh; }
+    .motion-end { position:absolute; top:460svh; width:0; height:0; pointer-events:none; }
 
     .sticky-stage {
       position: sticky;
@@ -477,6 +481,7 @@
       min-height: 100svh;
       display: none;
       place-items: start center;
+      margin-top: -130svh;
       padding: clamp(64px,10svh,110px) 18px calc(42px + env(safe-area-inset-bottom));
       background: transparent;
     }
@@ -654,6 +659,7 @@
           </div>
         </div>
       </div>
+      <span class="motion-end" id="motionEnd" aria-hidden="true"></span>
     </section>
 
     <section class="rsvp-section" id="rsvp" aria-labelledby="rsvpTitle" aria-hidden="true">
@@ -737,6 +743,7 @@
   <script>
     (() => {
       const story = document.getElementById('story');
+      const motionEnd = document.getElementById('motionEnd');
       const envLayers = [...document.querySelectorAll('.env-layer')];
       const envFlap = document.querySelector('.env-flap');
       const envPocket = document.querySelector('.env-pocket');
@@ -823,14 +830,14 @@
       }
 
       function storyYAt(progress) {
-        const distance = Math.max(1,story.offsetHeight-window.innerHeight);
+        const distance = Math.max(1,motionEnd.offsetTop-window.innerHeight);
         return story.offsetTop+distance*progress;
       }
       function frontAnchor() {
         return storyYAt(frontStopProgress);
       }
       function scrollProgress() {
-        const distance = Math.max(1,story.offsetHeight-window.innerHeight);
+        const distance = Math.max(1,motionEnd.offsetTop-window.innerHeight);
         return clamp((window.scrollY-story.offsetTop)/distance);
       }
 
