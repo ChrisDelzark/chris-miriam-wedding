@@ -608,6 +608,26 @@
       .final-label { display:none; }
     }
 
+    @media (min-width:900px) {
+      :root {
+        --frame-w:min(100vw,1200px);
+        --env-w:min(calc(var(--frame-w) - 220px),880px,calc(80svh * 1.34));
+        --card-w:min(46vw,470px,calc((100svh - 112px) * .6));
+      }
+      .env-layer,.card-button { top:45%; }
+      .opening-controls,.final-actions {
+        bottom:max(32px,calc(env(safe-area-inset-bottom) + 24px));
+        width:min(92%,480px);
+      }
+      .control { min-height:58px; padding-inline:38px; font-size:13px; }
+      .rsvp-peek {
+        width:min(calc(100vw - 48px),620px);
+        height:112px;
+        padding:14px 30px 36px;
+      }
+      .rsvp-peek-title { font-size:28px; }
+    }
+
     @media (prefers-reduced-motion:reduce) {
       *,*::before,*::after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; scroll-behavior:auto !important; }
       .particle { display:none; }
