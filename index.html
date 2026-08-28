@@ -897,9 +897,13 @@
           layer.style.setProperty('--env-blur',`${envelopeBlur.toFixed(2)}px`);
           layer.style.setProperty('--env-brightness',envelopeBrightness.toFixed(3));
         });
-        flapRotator.classList.toggle('is-back',flap>.5);
+        // Hand off the flap only when its projected plane is edge-on. The
+        // previous early swap happened while a large part of the flap was
+        // still visible, which made it appear to jump behind the card.
+        const flapIsBehindCard = flap>=90/132;
+        flapRotator.classList.toggle('is-back',flapIsBehindCard);
         flapRotator.style.transform = `perspective(1200px) rotateX(${(-132*flap).toFixed(2)}deg)`;
-        envFlap.style.zIndex = flap>.52 ? '2' : '5';
+        envFlap.style.zIndex = flapIsBehindCard ? '2' : '5';
 
         // The full-size invitation is already seated immediately beneath the
         // opening before the flap moves, so the envelope can never appear
