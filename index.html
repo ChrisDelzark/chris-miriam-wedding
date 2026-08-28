@@ -917,13 +917,11 @@
         visualFlip = manualFlip === null ? scrollFlip : manualFlip;
         const detailsCentering = phase(visualFlip,0,.96);
         const detailsScaleFocus = phase(visualFlip,.08,.98);
-        const seatedCardScale = isDesktop
-          ? Math.max(1,envLayers[0].offsetWidth/cardButton.offsetWidth)
-          : 1;
-        // On desktop the invitation remains envelope-width while it rises.
-        // Its scale-down begins only after the envelope has already retreated,
-        // making the motion read as extraction first and presentation second.
-        const seatedScaleRelease = isDesktop ? smooth(phase(progress,.60,.88)) : 1;
+        const seatedCardScale = Math.max(1,envLayers[0].offsetWidth/cardButton.offsetWidth);
+        // The invitation remains envelope-width while it rises on every
+        // viewport. Mobile keeps its established choreography, then releases
+        // the seated scale only after the envelope has begun retreating.
+        const seatedScaleRelease = smooth(phase(progress,isDesktop ? .60 : .80,isDesktop ? .88 : .97));
         const presentationScale = mix(seatedCardScale,1,seatedScaleRelease);
         const motionStageRect = cardButton.parentElement.getBoundingClientRect();
         const restingCardY = isDesktop
