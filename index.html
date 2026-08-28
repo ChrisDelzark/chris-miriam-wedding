@@ -375,8 +375,8 @@
     .details-action { transition: opacity .3s ease,transform .3s ease,background .25s ease; }
     .back-actions {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: minmax(0,240px);
+      justify-content: center;
       width: 100%;
       opacity: 0;
       transform: translateY(8px) scale(.98);
@@ -393,6 +393,9 @@
       opacity: 1;
       transform: translateY(0) scale(1);
       pointer-events: auto;
+    }
+    .final-actions.show-details {
+      bottom: max(94px,calc(env(safe-area-inset-bottom) + 82px));
     }
     .final-actions.is-flipping .action-switch {
       opacity: 0;
@@ -432,6 +435,65 @@
     .scroll-line { width:1px; height:28px; background:linear-gradient(var(--gold),transparent); animation:breathe 1.8s ease-in-out infinite; }
     @keyframes breathe { 0%,100% { opacity:.35; transform:scaleY(.72); } 50% { opacity:1; transform:scaleY(1); } }
     .final-label { margin:0; color:rgba(245,221,176,.72); font-size:9px; letter-spacing:.2em; text-transform:uppercase; }
+
+    .rsvp-peek {
+      position: fixed;
+      z-index: 50;
+      left: 50%;
+      bottom: calc(-34px - env(safe-area-inset-bottom));
+      width: min(calc(100vw - 24px),406px);
+      height: 104px;
+      padding: 11px 24px 34px;
+      overflow: hidden;
+      border: 1px solid rgba(234,191,105,.86);
+      border-bottom: 0;
+      border-radius: 24px 24px 0 0;
+      background:
+        linear-gradient(90deg,transparent,rgba(247,211,144,.11),transparent) top / 100% 1px no-repeat,
+        linear-gradient(158deg,rgba(89,21,22,.985),rgba(40,7,7,.99) 74%);
+      color: var(--gold-bright);
+      box-shadow: 0 -18px 48px rgba(0,0,0,.46),inset 0 1px 0 rgba(255,255,255,.055);
+      opacity: 0;
+      transform: translate(-50%,calc(100% + 10px));
+      pointer-events: none;
+      cursor: pointer;
+      transition: opacity .38s ease,transform .56s cubic-bezier(.2,.8,.2,1),filter .25s ease;
+    }
+    .rsvp-peek::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: .22;
+      background:
+        repeating-linear-gradient(45deg,transparent 0 10px,rgba(238,188,92,.09) 10px 11px),
+        repeating-linear-gradient(-45deg,transparent 0 10px,rgba(238,188,92,.065) 10px 11px);
+      mask-image: linear-gradient(90deg,black,transparent 28%,transparent 72%,black);
+    }
+    .rsvp-peek::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      width: 36px;
+      height: 2px;
+      border-radius: 999px;
+      background: rgba(245,215,158,.42);
+      transform: translateX(-50%);
+    }
+    .rsvp-peek.is-visible {
+      opacity: 1;
+      transform: translate(-50%,0);
+      pointer-events: auto;
+    }
+    .rsvp-peek:hover,.rsvp-peek:focus-visible { filter:brightness(1.08); transform:translate(-50%,-5px); }
+    .rsvp-peek:focus-visible { outline:2px solid var(--ivory); outline-offset:-5px; }
+    .rsvp-peek-content { position:relative; display:grid; grid-template-columns:1fr auto; align-items:center; gap:14px; text-align:left; }
+    .rsvp-peek-copy { display:grid; gap:2px; }
+    .rsvp-peek-kicker { color:rgba(240,207,145,.66); font-size:8px; letter-spacing:.24em; text-transform:uppercase; }
+    .rsvp-peek-title { color:var(--gold-bright); font-size:24px; line-height:1; letter-spacing:.18em; text-transform:uppercase; }
+    .rsvp-peek-hint { display:flex; align-items:center; gap:7px; color:rgba(245,233,214,.78); font-size:9px; letter-spacing:.16em; text-transform:uppercase; }
+    .rsvp-peek-hint svg { width:15px; height:15px; }
 
     .rsvp-section {
       position: relative;
@@ -626,7 +688,6 @@
             <button class="control control--gold details-action" id="detailsAction" type="button">View details</button>
             <div class="back-actions" id="backActions" aria-hidden="true">
               <button class="control" id="frontAction" type="button">View front</button>
-              <button class="control control--gold" id="rsvpJump" type="button">RSVP</button>
             </div>
           </div>
         </div>
@@ -697,6 +758,18 @@
     </section>
   </main>
 
+  <button class="rsvp-peek" id="rsvpPeek" type="button" aria-controls="rsvp" aria-label="Open RSVP form" aria-hidden="true" tabindex="-1">
+    <span class="rsvp-peek-content">
+      <span class="rsvp-peek-copy">
+        <span class="rsvp-peek-kicker">Kindly reply</span>
+        <span class="rsvp-peek-title">RSVP</span>
+      </span>
+      <span class="rsvp-peek-hint">Tap to respond
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+      </span>
+    </span>
+  </button>
+
   <noscript>This animated invitation needs JavaScript enabled to open and reveal the RSVP.</noscript>
 
   <script>
@@ -717,7 +790,7 @@
       const detailsAction = document.getElementById('detailsAction');
       const frontAction = document.getElementById('frontAction');
       const backActions = document.getElementById('backActions');
-      const rsvpJump = document.getElementById('rsvpJump');
+      const rsvpPeek = document.getElementById('rsvpPeek');
       const rsvpSection = document.getElementById('rsvp');
       const backToInvitation = document.getElementById('backToInvitation');
       const rsvpForm = document.getElementById('rsvpForm');
@@ -743,10 +816,18 @@
       let autoFrame = 0;
       let manualFlipFrame = 0;
       let openingStarted = false;
+      let rsvpFormInView = false;
 
       const frontStopProgress = .74;
       const scrollFlipStart = .80;
       const scrollFlipEnd = .94;
+
+      function syncRsvpPeek() {
+        const shouldShow = currentProgress>.9 && visualFlip>.82 && !rsvpFormInView;
+        rsvpPeek.classList.toggle('is-visible',shouldShow);
+        rsvpPeek.setAttribute('aria-hidden',String(!shouldShow));
+        rsvpPeek.tabIndex = shouldShow ? 0 : -1;
+      }
 
       const clamp = value => Math.min(1,Math.max(0,value));
       const phase = (value,start,end) => clamp((value-start)/(end-start));
@@ -888,6 +969,7 @@
         cardButton.setAttribute('aria-label',ready
           ? (visualFlip>.5 ? 'Wedding details for Chris and Miriam.' : 'Front of Chris and Miriam’s wedding invitation.')
           : 'Wedding invitation opening as you scroll.');
+        syncRsvpPeek();
       }
 
       function updateFromScroll() {
@@ -1041,7 +1123,7 @@
       openAction.addEventListener('click',animateOpen);
       detailsAction.addEventListener('click',() => flipCardTo(1));
       frontAction.addEventListener('click',() => flipCardTo(0));
-      rsvpJump.addEventListener('click',() => rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'}));
+      rsvpPeek.addEventListener('click',() => rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'}));
       backToInvitation.addEventListener('click',() => window.scrollTo({top:frontAnchor(),behavior:reducedMotion.matches?'auto':'smooth'}));
       guestMinus.addEventListener('click',() => updateGuestCount(-1));
       guestPlus.addEventListener('click',() => updateGuestCount(1));
@@ -1050,6 +1132,11 @@
       rsvpForm.addEventListener('submit',shareRsvp);
       window.addEventListener('scroll',requestScrollUpdate,{passive:true});
       window.addEventListener('resize',requestScrollUpdate,{passive:true});
+      const rsvpObserver = new IntersectionObserver(entries => {
+        rsvpFormInView = entries.some(entry => entry.isIntersecting);
+        syncRsvpPeek();
+      },{threshold:.06});
+      rsvpObserver.observe(rsvpSection);
       const takeManualScrollControl = () => {
         openingStarted = true;
         cancelAutoScroll();
@@ -1071,6 +1158,8 @@
         rsvpSection.setAttribute('aria-hidden','true');
         finalActions.classList.remove('show-details','is-flipping');
         backActions.setAttribute('aria-hidden','true');
+        rsvpFormInView = false;
+        syncRsvpPeek();
         window.scrollTo(0,0);
         applyMotion(0,0);
         if (reveal) document.documentElement.classList.add('invitation-ready');
