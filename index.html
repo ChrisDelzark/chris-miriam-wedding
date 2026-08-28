@@ -95,15 +95,6 @@
       isolation: isolate;
     }
 
-    .sticky-stage::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      z-index: 30;
-      pointer-events: none;
-      box-shadow: inset 0 0 18vmax rgba(0,0,0,.72);
-    }
-
     .light-beam {
       position: absolute;
       z-index: -2;
@@ -754,6 +745,7 @@
   <script>
     (() => {
       const story = document.getElementById('story');
+      const motionStage = document.querySelector('.motion-stage');
       const envLayers = [...document.querySelectorAll('.env-layer')];
       const envFlap = document.querySelector('.env-flap');
       const envPocket = document.querySelector('.env-pocket');
@@ -794,6 +786,7 @@
       let manualFlipFrame = 0;
       let openingStarted = false;
       let rsvpFormInView = false;
+      let motionStageCompensation = 0;
 
       const frontStopProgress = .74;
       const scrollFlipStart = .80;
@@ -840,9 +833,6 @@
       function frontAnchor() {
         return storyYAt(frontStopProgress);
       }
-      function detailsAnchor() {
-        return storyYAt(scrollFlipEnd);
-      }
       function scrollProgress() {
         const distance = Math.max(1,story.offsetHeight-window.innerHeight);
         return clamp((window.scrollY-story.offsetTop)/distance);
@@ -850,6 +840,11 @@
 
       function applyMotion(progress,scrollFlip = 0) {
         currentProgress = progress;
+        const rawStoryProgress = scrollProgress();
+        const uncompensatedStageTop = motionStage.getBoundingClientRect().top-motionStageCompensation;
+        const stageHold = 1-smooth(phase(rawStoryProgress,.96,1));
+        motionStageCompensation = -uncompensatedStageTop*stageHold;
+        motionStage.style.transform = `translate3d(0,${motionStageCompensation.toFixed(2)}px,0)`;
         const sealFade = smooth(phase(progress,.055,.14));
         const flapLinear = phase(progress,.09,.27);
         const flap = easeOutBack(flapLinear);
@@ -896,12 +891,13 @@
           - cardButton.offsetHeight*(revealDepthRatio-.5);
         const cardStartY = (cardButton.offsetHeight-envLayers[0].offsetHeight)*.5+12;
         visualFlip = manualFlip === null ? scrollFlip : manualFlip;
-        const detailsFocus = smooth(phase(visualFlip,.58,.96));
+        const detailsCentering = phase(visualFlip,0,.96);
+        const detailsScaleFocus = phase(visualFlip,.08,.98);
         const motionStageRect = cardButton.parentElement.getBoundingClientRect();
         const restingCardY = mix(mix(cardStartY,cardRevealY,extraction),-34,settle)-motionStageRect.top*settle;
         const detailsCenteredY = window.innerHeight*.5-(motionStageRect.top+cardButton.offsetTop);
-        const cardY = mix(restingCardY,detailsCenteredY,detailsFocus);
-        const cardScale = mix(1,1.09,detailsFocus);
+        const cardY = mix(restingCardY,detailsCenteredY,detailsCentering);
+        const cardScale = mix(1,1.09,detailsScaleFocus);
         const cardRoll = 0;
         cardButton.style.transform = `translate(-50%,-50%) translate3d(0,${cardY.toFixed(2)}px,0) rotateZ(${cardRoll.toFixed(2)}deg) scale(${cardScale.toFixed(4)})`;
         cardButton.style.opacity = '1';
@@ -961,9 +957,17 @@
         ticking = false;
         const rawProgress = scrollProgress();
         if (rawProgress>.001) openingStarted = true;
-        if (manualFlip !== null && rawProgress<frontStopProgress-.03) {
-          manualFlip = null;
-          finalActions.classList.remove('show-details','is-flipping');
+        if (manualFlip !== null && !manualFlipFrame && rawProgress<frontStopProgress) {
+          const reverseStart = frontStopProgress-.14;
+          manualFlip = smooth(clamp((rawProgress-reverseStart)/(frontStopProgress-reverseStart)));
+          const manualShowsDetails = manualFlip>.5;
+          const manualIsFlipping = manualFlip>.02 && manualFlip<.98;
+          finalActions.classList.toggle('show-details',manualShowsDetails);
+          finalActions.classList.toggle('is-flipping',manualIsFlipping);
+          if (manualFlip<=.001) {
+            manualFlip = null;
+            finalActions.classList.remove('show-details','is-flipping');
+          }
         }
         const motionProgress = clamp(rawProgress/frontStopProgress);
         const scrollFlip = smooth(phase(rawProgress,scrollFlipStart,scrollFlipEnd));
@@ -1025,14 +1029,12 @@
           finalActions.classList.remove('is-flipping');
           if (to>.5) {
             unlockDetailsAndRsvp();
-            window.scrollTo(0,detailsAnchor());
-            manualFlip = null;
-            applyMotion(1,1);
+            applyMotion(1,0);
           }
           return;
         }
         const started = performance.now();
-        const duration = 1080;
+        const duration = 1750;
         function frame(now) {
           const amount = clamp((now-started)/duration);
           window.scrollTo(0,anchorY);
@@ -1045,9 +1047,7 @@
             finalActions.classList.remove('is-flipping');
             if (to>.5) {
               unlockDetailsAndRsvp();
-              window.scrollTo(0,detailsAnchor());
-              manualFlip = null;
-              applyMotion(1,1);
+              applyMotion(1,0);
             }
           }
         }
@@ -1144,6 +1144,8 @@
         if (openingStarted) return;
         cancelAutoScroll();
         manualFlip = null;
+        motionStageCompensation = 0;
+        motionStage.style.transform = '';
         document.body.classList.remove('details-unlocked');
         rsvpSection.setAttribute('aria-hidden','true');
         finalActions.classList.remove('show-details','is-flipping');
