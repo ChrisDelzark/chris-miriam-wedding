@@ -90,7 +90,7 @@
       top: 0;
       height: 100svh;
       min-height: 560px;
-      overflow: hidden;
+      overflow: visible;
       perspective: 1800px;
       isolation: isolate;
     }
@@ -734,7 +734,6 @@
   <script>
     (() => {
       const story = document.getElementById('story');
-      const motionStage = document.querySelector('.motion-stage');
       const envLayers = [...document.querySelectorAll('.env-layer')];
       const envFlap = document.querySelector('.env-flap');
       const envPocket = document.querySelector('.env-pocket');
@@ -776,7 +775,6 @@
       let openingStarted = false;
       let rsvpFormInView = false;
       let rsvpTransitioning = false;
-      let motionStageCompensation = 0;
 
       const frontStopProgress = .74;
       const scrollFlipStart = .80;
@@ -799,6 +797,13 @@
         return 1+curve*Math.pow(value-1,3)+strength*Math.pow(value-1,2);
       };
       const mix = (from,to,value) => from+(to-from)*value;
+      const frameNow = () => window.performance?.now?.() ?? Date.now();
+      const requestFrame = callback => typeof window.requestAnimationFrame==='function'
+        ? window.requestAnimationFrame(callback)
+        : window.setTimeout(() => callback(frameNow()),16);
+      const cancelFrame = handle => typeof window.cancelAnimationFrame==='function'
+        ? window.cancelAnimationFrame(handle)
+        : window.clearTimeout(handle);
 
       function createParticles() {
         const host = document.getElementById('particles');
@@ -830,11 +835,6 @@
 
       function applyMotion(progress,scrollFlip = 0) {
         currentProgress = progress;
-        const rawStoryProgress = scrollProgress();
-        const uncompensatedStageTop = motionStage.getBoundingClientRect().top-motionStageCompensation;
-        const stageHold = 1-smooth(phase(rawStoryProgress,.96,1));
-        motionStageCompensation = -uncompensatedStageTop*stageHold;
-        motionStage.style.transform = `translate3d(0,${motionStageCompensation.toFixed(2)}px,0)`;
         const sealFade = smooth(phase(progress,.055,.14));
         const flapLinear = phase(progress,.09,.27);
         const flap = easeOutBack(flapLinear);
@@ -966,11 +966,11 @@
       function requestScrollUpdate() {
         if (ticking) return;
         ticking = true;
-        window.requestAnimationFrame(updateFromScroll);
+        requestFrame(updateFromScroll);
       }
       function cancelAutoScroll() {
         if (autoFrame) {
-          window.cancelAnimationFrame(autoFrame);
+          cancelFrame(autoFrame);
           autoFrame = 0;
         }
       }
@@ -985,7 +985,7 @@
           applyMotion(1,0);
           return;
         }
-        const started = performance.now();
+        const started = frameNow();
         const duration = 5200;
         const distance = targetY-startY;
         function frame(now) {
@@ -993,10 +993,10 @@
           const eased = t<.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2;
           window.scrollTo(0,startY+distance*eased);
           applyMotion(clamp(scrollProgress()/frontStopProgress),0);
-          if (t<1) autoFrame = window.requestAnimationFrame(frame);
+          if (t<1) autoFrame = requestFrame(frame);
           else autoFrame = 0;
         }
-        autoFrame = window.requestAnimationFrame(frame);
+        autoFrame = requestFrame(frame);
       }
 
       function unlockDetailsAndRsvp() {
@@ -1006,7 +1006,7 @@
 
       function flipCardTo(to) {
         if (currentProgress<.9) return;
-        if (manualFlipFrame) window.cancelAnimationFrame(manualFlipFrame);
+        if (manualFlipFrame) cancelFrame(manualFlipFrame);
         const anchorY = frontAnchor();
         window.scrollTo(0,anchorY);
         const anchoredProgress = 1;
@@ -1023,14 +1023,14 @@
           }
           return;
         }
-        const started = performance.now();
+        const started = frameNow();
         const duration = 1750;
         function frame(now) {
           const amount = clamp((now-started)/duration);
           window.scrollTo(0,anchorY);
           manualFlip = mix(from,to,smooth(amount));
           applyMotion(anchoredProgress,0);
-          if (amount<1) manualFlipFrame = window.requestAnimationFrame(frame);
+          if (amount<1) manualFlipFrame = requestFrame(frame);
           else {
             manualFlipFrame = 0;
             finalActions.classList.toggle('show-details',to>.5);
@@ -1041,7 +1041,7 @@
             }
           }
         }
-        manualFlipFrame = window.requestAnimationFrame(frame);
+        manualFlipFrame = requestFrame(frame);
       }
 
       function updateGuestCount(delta) {
@@ -1121,7 +1121,7 @@
         rsvpFormInView = entries.some(entry => entry.isIntersecting);
         if (rsvpFormInView) rsvpTransitioning = false;
         syncRsvpPeek();
-      },{threshold:.06});
+      },{threshold:0});
       rsvpObserver.observe(rsvpSection);
       const takeManualScrollControl = () => {
         openingStarted = true;
@@ -1139,8 +1139,6 @@
         if (openingStarted) return;
         cancelAutoScroll();
         manualFlip = null;
-        motionStageCompensation = 0;
-        motionStage.style.transform = '';
         document.body.classList.remove('details-unlocked');
         rsvpSection.setAttribute('aria-hidden','true');
         finalActions.classList.remove('show-details','is-flipping');
