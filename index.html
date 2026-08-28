@@ -792,6 +792,7 @@
       const shareStatus = document.getElementById('shareStatus');
       const copyBox = document.getElementById('copyBox');
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      const desktopLayout = window.matchMedia('(min-width:900px)');
 
       let guests = 1;
       let currentProgress = 0;
@@ -911,11 +912,17 @@
         visualFlip = manualFlip === null ? scrollFlip : manualFlip;
         const detailsCentering = phase(visualFlip,0,.96);
         const detailsScaleFocus = phase(visualFlip,.08,.98);
+        const seatedCardScale = desktopLayout.matches
+          ? Math.min(1.65,Math.max(1,envLayers[0].offsetWidth*.8/cardButton.offsetWidth))
+          : 1;
+        const seatedScaleRelease = smooth(phase(progress,.28,.50));
+        const presentationScale = mix(seatedCardScale,1,seatedScaleRelease);
         const motionStageRect = cardButton.parentElement.getBoundingClientRect();
         const restingCardY = mix(mix(cardStartY,cardRevealY,extraction),-34,settle)-motionStageRect.top*settle;
         const detailsCenteredY = window.innerHeight*.5-(motionStageRect.top+cardButton.offsetTop);
-        const cardY = mix(restingCardY,detailsCenteredY,detailsCentering);
-        const cardScale = mix(1,1.09,detailsScaleFocus);
+        const seatedTopCompensation = cardButton.offsetHeight*(presentationScale-1)*.5;
+        const cardY = mix(restingCardY,detailsCenteredY,detailsCentering)+seatedTopCompensation;
+        const cardScale = presentationScale*mix(1,1.09,detailsScaleFocus);
         const cardRoll = 0;
         cardButton.style.transform = `translate(-50%,-50%) translate3d(0,${cardY.toFixed(2)}px,0) rotateZ(${cardRoll.toFixed(2)}deg) scale(${cardScale.toFixed(4)})`;
         cardButton.style.opacity = '1';
@@ -925,7 +932,8 @@
         // revealed by motion rather than by changing its dimensions.
         const cardRect = cardButton.getBoundingClientRect();
         const pocketRect = envPocket.getBoundingClientRect();
-        const bottomCrop = Math.min(cardButton.offsetHeight,Math.max(0,cardRect.bottom-pocketRect.bottom+2));
+        const visualBottomCrop = Math.max(0,cardRect.bottom-pocketRect.bottom+2);
+        const bottomCrop = Math.min(cardButton.offsetHeight,visualBottomCrop/Math.max(.001,cardScale));
         const cardClip = `inset(0 0 ${bottomCrop.toFixed(2)}px 0 round 3px)`;
 
         // Change painter order only after the envelope's complete bounding box
