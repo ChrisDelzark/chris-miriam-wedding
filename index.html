@@ -475,20 +475,9 @@
       display: none;
       place-items: start center;
       padding: clamp(64px,10svh,110px) 18px calc(42px + env(safe-area-inset-bottom));
-      background:
-        radial-gradient(circle at 50% 0,rgba(113,33,27,.2),transparent 42%),
-        linear-gradient(180deg,#100302,#260707 44%,#100302);
+      background: transparent;
     }
     body.details-unlocked .rsvp-section { display: grid; }
-    .rsvp-section::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        repeating-linear-gradient(45deg,rgba(255,255,255,.01) 0 1px,transparent 1px 8px),
-        repeating-linear-gradient(-45deg,rgba(237,174,76,.008) 0 1px,transparent 1px 8px);
-    }
     .rsvp-panel {
       position: relative;
       width: min(100%,680px);
@@ -786,6 +775,7 @@
       let manualFlipFrame = 0;
       let openingStarted = false;
       let rsvpFormInView = false;
+      let rsvpTransitioning = false;
       let motionStageCompensation = 0;
 
       const frontStopProgress = .74;
@@ -793,7 +783,7 @@
       const scrollFlipEnd = .94;
 
       function syncRsvpPeek() {
-        const shouldShow = currentProgress>.9 && visualFlip>.82 && !rsvpFormInView;
+        const shouldShow = currentProgress>.9 && visualFlip>.82 && !rsvpFormInView && !rsvpTransitioning;
         rsvpPeek.classList.toggle('is-visible',shouldShow);
         rsvpPeek.setAttribute('aria-hidden',String(!shouldShow));
         rsvpPeek.tabIndex = shouldShow ? 0 : -1;
@@ -1114,7 +1104,11 @@
 
       openAction.addEventListener('click',animateOpen);
       detailsAction.addEventListener('click',() => flipCardTo(1));
-      rsvpPeek.addEventListener('click',() => rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'}));
+      rsvpPeek.addEventListener('click',() => {
+        rsvpTransitioning = true;
+        syncRsvpPeek();
+        rsvpSection.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'});
+      });
       backToInvitation.addEventListener('click',() => window.scrollTo({top:frontAnchor(),behavior:reducedMotion.matches?'auto':'smooth'}));
       guestMinus.addEventListener('click',() => updateGuestCount(-1));
       guestPlus.addEventListener('click',() => updateGuestCount(1));
@@ -1125,6 +1119,7 @@
       window.addEventListener('resize',requestScrollUpdate,{passive:true});
       const rsvpObserver = new IntersectionObserver(entries => {
         rsvpFormInView = entries.some(entry => entry.isIntersecting);
+        if (rsvpFormInView) rsvpTransitioning = false;
         syncRsvpPeek();
       },{threshold:.06});
       rsvpObserver.observe(rsvpSection);
@@ -1150,6 +1145,7 @@
         rsvpSection.setAttribute('aria-hidden','true');
         finalActions.classList.remove('show-details','is-flipping');
         rsvpFormInView = false;
+        rsvpTransitioning = false;
         syncRsvpPeek();
         window.scrollTo(0,0);
         applyMotion(0,0);
