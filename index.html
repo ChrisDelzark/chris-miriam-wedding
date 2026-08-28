@@ -337,7 +337,10 @@
         linear-gradient(118deg,transparent 28%,rgba(255,238,201,.055) 46%,transparent 62%);
       mix-blend-mode: soft-light;
     }
-    .card-back { opacity: 0; }
+    .card-back {
+      transform: rotateY(180deg);
+      -webkit-transform: rotateY(180deg);
+    }
     .card-face img { display:block; width:100%; height:100%; object-fit:cover; user-select:none; -webkit-user-drag:none; }
 
     .opening-controls,
@@ -741,8 +744,6 @@
       const seal = document.getElementById('seal');
       const cardButton = document.getElementById('cardButton');
       const card = document.getElementById('card');
-      const cardFront = document.querySelector('.card-front');
-      const cardBack = document.querySelector('.card-back');
       const openingControls = document.getElementById('openingControls');
       const openAction = document.getElementById('openAction');
       const finalActions = document.getElementById('finalActions');
@@ -918,11 +919,7 @@
           if (scrollFlip>.88) unlockDetailsAndRsvp();
         }
         const flipLift = Math.sin(Math.PI*visualFlip);
-        const firstHalf = visualFlip<=.5;
-        const halfTurn = firstHalf ? smooth(visualFlip*2) : smooth((visualFlip-.5)*2);
-        const cardAngle = firstHalf ? 70*halfTurn : -70*(1-halfTurn);
-        cardFront.style.opacity = firstHalf ? '1' : '0';
-        cardBack.style.opacity = firstHalf ? '0' : '1';
+        const cardAngle = 180*visualFlip;
         card.style.transform = `perspective(1450px) translateZ(${(18*flipLift).toFixed(2)}px) rotateZ(${(.7*flipLift).toFixed(2)}deg) rotateY(${cardAngle.toFixed(2)}deg)`;
         cardButton.style.filter = `drop-shadow(0 ${(mix(18,30,extraction)+8*flipLift).toFixed(1)}px ${(mix(22,38,extraction)+6*flipLift).toFixed(1)}px rgba(0,0,0,${mix(.44,.65,extraction).toFixed(3)}))`;
 
