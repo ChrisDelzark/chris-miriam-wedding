@@ -34,7 +34,12 @@ export function readConfig(env: Record<string, string | undefined>): AppConfig {
     "ADMIN_PASSCODE_HASH",
     "ADMIN_SESSION_SECRET",
   ]
-  const missing = required.filter((name) => value(name) === "")
+  const listSettings = ["COUPLE_EMAILS", "ADMIN_EMAILS"]
+  const isMissing = (name: string) =>
+    listSettings.includes(name)
+      ? emailList(value(name)).length === 0
+      : value(name) === ""
+  const missing = required.filter(isMissing)
   if (missing.length > 0) {
     throw new ConfigError(`Missing settings: ${missing.join(", ")}`)
   }

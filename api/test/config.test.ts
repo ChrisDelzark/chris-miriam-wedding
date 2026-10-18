@@ -31,3 +31,9 @@ test("rejects a short session secret", () => {
     ConfigError
   )
 })
+
+test("treats lists with no addresses as missing", () => {
+  expect(() =>
+    readConfig({ ...env, COUPLE_EMAILS: " , ", ADMIN_EMAILS: "," })
+  ).toThrow(/COUPLE_EMAILS.*ADMIN_EMAILS/)
+})
