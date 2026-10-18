@@ -4,6 +4,15 @@ import type { Attendance } from "../rsvp/validation"
 
 const TABLE_NAME = "rsvps"
 const PARTITION_KEY = "rsvp"
+// Bounded so a slow or unreachable table cannot hold a request open.
+const CLIENT_OPTIONS = {
+  retryOptions: { maxRetries: 2, maxRetryDelayInMs: 2000 },
+}
+const OPERATION_TIMEOUT_MS = 5000
+
+const timeout = () => ({
+  abortSignal: AbortSignal.timeout(OPERATION_TIMEOUT_MS),
+})
 
 function hasStatusCode(error: unknown, statusCode: number): boolean {
   return (
@@ -54,11 +63,15 @@ function fromEntity(entity: Record<string, unknown>): RsvpRecord {
 }
 
 export function createTableRsvpStore(connectionString: string): RsvpStore {
-  const client = TableClient.fromConnectionString(connectionString, TABLE_NAME)
+  const client = TableClient.fromConnectionString(
+    connectionString,
+    TABLE_NAME,
+    CLIENT_OPTIONS
+  )
   let tableReady: Promise<void> | null = null
 
   function ensureTable(): Promise<void> {
-    tableReady ??= client.createTable().catch((error: unknown) => {
+    tableReady ??= client.createTable(timeout()).catch((error: unknown) => {
       tableReady = null
       if (!hasStatusCode(error, 409)) throw error
       tableReady = Promise.resolve()
@@ -70,7 +83,7 @@ export function createTableRsvpStore(connectionString: string): RsvpStore {
     async get(rowKey) {
       await ensureTable()
       try {
-        const entity = await client.getEntity(PARTITION_KEY, rowKey)
+        const entity = await client.getEntity(PARTITION_KEY, rowKey, timeout())
         return fromEntity(entity)
       } catch (error) {
         if (hasStatusCode(error, 404)) return null
@@ -80,14 +93,15 @@ export function createTableRsvpStore(connectionString: string): RsvpStore {
 
     async put(record) {
       await ensureTable()
-      await client.upsertEntity(toEntity(record), "Replace")
+      await client.upsertEntity(toEntity(record), "Replace", timeout())
     },
 
     async setEmailStatus(rowKey, status) {
       await ensureTable()
       await client.updateEntity(
         { partitionKey: PARTITION_KEY, rowKey, ...status },
-        "Merge"
+        "Merge",
+        timeout()
       )
     },
 
@@ -96,6 +110,7 @@ export function createTableRsvpStore(connectionString: string): RsvpStore {
       const records: RsvpRecord[] = []
       const entities = client.listEntities({
         queryOptions: { filter: `PartitionKey eq '${PARTITION_KEY}'` },
+        ...timeout(),
       })
       for await (const entity of entities) {
         records.push(fromEntity(entity))
