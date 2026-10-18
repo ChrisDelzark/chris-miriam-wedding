@@ -9,3 +9,6 @@
 api/node_modules/
 api/dist/
 out/
+
+# Local Azure Functions settings hold real connection strings and secrets
+api/local.settings.json

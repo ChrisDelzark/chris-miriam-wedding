@@ -110,7 +110,7 @@
 
     <section id="list-view" hidden>
       <div class="toolbar">
-        <button class="button secondary" id="csv-button" type="button">Download CSV</button>
+        <button class="button secondary" id="csv-button" type="button" disabled>Download CSV</button>
         <button class="button secondary" id="signout-button" type="button">Sign out</button>
       </div>
       <p class="error" id="list-error" role="alert"></p>
@@ -227,11 +227,13 @@
 
     async function loadList() {
       $("list-error").textContent = ""
+      $("csv-button").disabled = true
       try {
         const response = await api("/api/rsvps")
         if (response.status === 401) return showView("signin")
         if (!response.ok) throw new Error("status " + response.status)
         renderList(await response.json())
+        $("csv-button").disabled = false
         showView("list")
       } catch {
         showView("list")
@@ -270,13 +272,22 @@
     }
 
     async function signOut() {
+      const button = $("signout-button")
+      $("list-error").textContent = ""
+      button.disabled = true
       try {
-        await api("/api/auth/logout", { method: "POST" })
+        const response = await api("/api/auth/logout", { method: "POST" })
+        if (!response.ok) throw new Error("status " + response.status)
       } catch {
-        // Cookie clears server-side only on success; fall through so the user sees the sign-in screen.
+        // The cookie is only cleared by a successful logout, so the session is still live.
+        $("list-error").textContent = "Couldn't sign out. Check your connection and try again."
+        return
+      } finally {
+        button.disabled = false
       }
       currentRsvps = []
       $("cards").replaceChildren()
+      $("csv-button").disabled = true
       showView("signin")
     }
 
