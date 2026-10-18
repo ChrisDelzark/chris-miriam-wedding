@@ -587,6 +587,12 @@
     .submit-rsvp:hover { filter:brightness(1.06); }
     .submit-rsvp:active { transform:scale(.99); }
     .submit-rsvp:focus-visible { outline:2px solid var(--ivory); outline-offset:3px; }
+    .submit-rsvp[disabled] { opacity:.6; filter:none; cursor:progress; }
+    .share-rsvp { width:100%; min-height:58px; border:1px solid var(--gold-bright); border-radius:10px; background:transparent; color:var(--gold-bright); font-family:var(--serif); font-size:14px; font-weight:700; letter-spacing:.18em; text-transform:uppercase; box-shadow:none; cursor:pointer; }
+    .share-rsvp:hover { background:rgba(216,164,76,.12); }
+    .share-rsvp:active { transform:scale(.99); }
+    .share-rsvp:focus-visible { outline:2px solid var(--ivory); outline-offset:3px; }
+    .hp { position:absolute; left:-10000px; top:auto; width:1px; height:1px; overflow:hidden; }
     .share-status { min-height:21px; margin:-5px 0 0; color:var(--muted); font-family:system-ui,sans-serif; font-size:13px; line-height:1.5; text-align:center; }
     .copy-box { width:100%; min-height:120px; padding:12px; border:1px solid rgba(216,164,76,.44); border-radius:10px; background:rgba(10,2,2,.55); color:var(--ivory); font-family:system-ui,sans-serif; font-size:13px; line-height:1.5; resize:none; }
 
@@ -738,7 +744,10 @@
             <textarea class="message-input" id="guestMessage" name="guestMessage" placeholder="Send a message to the couple"></textarea>
           </label>
 
-          <button class="submit-rsvp" type="submit">Share RSVP</button>
+          <label class="hp" aria-hidden="true">Website<input name="website" tabindex="-1" autocomplete="off"></label>
+
+          <button class="submit-rsvp" type="submit" id="sendRsvp">Send RSVP</button>
+          <button class="share-rsvp" type="button" id="shareRsvp">Share RSVP</button>
           <p class="share-status" id="shareStatus" aria-live="polite"></p>
           <textarea class="copy-box" id="copyBox" aria-label="RSVP message ready to copy" readonly hidden></textarea>
         </form>
@@ -791,6 +800,9 @@
       const guestMessage = document.getElementById('guestMessage');
       const shareStatus = document.getElementById('shareStatus');
       const copyBox = document.getElementById('copyBox');
+      const sendButton = document.getElementById('sendRsvp');
+      const shareButton = document.getElementById('shareRsvp');
+      const honeypot = rsvpForm.elements.website;
       const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
       const desktopLayout = window.matchMedia('(min-width:900px)');
 
@@ -1111,10 +1123,62 @@
         return hasEnoughDigits;
       }
 
-      async function shareRsvp(event) {
-        event.preventDefault();
+      function formIsValid() {
         validatePhone();
-        if (!rsvpForm.reportValidity()) return;
+        return rsvpForm.reportValidity();
+      }
+
+      const sendErrorText = 'Your RSVP didn\'t go through. Please try again, or tap Share RSVP to send it to Chris or Miriam directly.';
+      let sending = false;
+
+      function focusFieldError(fieldErrors) {
+        const fields = {name:guestName,email:guestEmail,phone:guestPhone,message:guestMessage,attendance:attendanceInputs[0]};
+        const key = Object.keys(fields).find(name => fieldErrors && typeof fieldErrors[name]==='string');
+        if (!key) return false;
+        shareStatus.textContent = fieldErrors[key];
+        fields[key].focus();
+        return true;
+      }
+
+      async function sendRsvp(event) {
+        event.preventDefault();
+        if (sending || !formIsValid()) return;
+        sending = true;
+        sendButton.disabled = true;
+        sendButton.textContent = 'Sending…';
+        shareStatus.textContent = '';
+        const accepted = new FormData(rsvpForm).get('attendance')==='Joyfully accepts';
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(),20000);
+        try {
+          const response = await fetch('/api/rsvp',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({name:guestName.value.trim(),email:guestEmail.value.trim(),phone:guestPhone.value.trim(),attendance:accepted?'accepts':'declines',partySize:accepted?guests:0,message:guestMessage.value.trim(),website:honeypot.value}),
+            signal:controller.signal
+          });
+          if (response.ok) {
+            shareStatus.textContent = 'RSVP sent. A confirmation is on its way to your email.';
+          } else if (response.status===400) {
+            const body = await response.json().catch(() => null);
+            if (!focusFieldError(body && body.fieldErrors)) shareStatus.textContent = sendErrorText;
+          } else if (response.status===429) {
+            shareStatus.textContent = 'Too many tries from this connection. Please wait a few minutes and try again.';
+          } else {
+            shareStatus.textContent = sendErrorText;
+          }
+        } catch (error) {
+          shareStatus.textContent = sendErrorText;
+        } finally {
+          clearTimeout(timeout);
+          sending = false;
+          sendButton.disabled = false;
+          sendButton.textContent = 'Send RSVP';
+        }
+      }
+
+      async function shareRsvp() {
+        if (!formIsValid()) return;
         const attendance = new FormData(rsvpForm).get('attendance');
         const message = guestMessage.value.trim();
         const lines = ['RSVP — Chris & Miriam','Saturday, 12 December 2026','',`Name: ${guestName.value.trim()}`,`Email: ${guestEmail.value.trim()}`,`Phone: ${guestPhone.value.trim()}`,`Response: ${attendance}`,`Party size: ${guests}`];
@@ -1154,7 +1218,8 @@
       guestPlus.addEventListener('click',() => updateGuestCount(1));
       attendanceInputs.forEach(input => input.addEventListener('change',() => updateAttendanceState(input.value)));
       guestPhone.addEventListener('input',validatePhone);
-      rsvpForm.addEventListener('submit',shareRsvp);
+      rsvpForm.addEventListener('submit',sendRsvp);
+      shareButton.addEventListener('click',shareRsvp);
       window.addEventListener('scroll',requestScrollUpdate,{passive:true});
       window.addEventListener('resize',requestScrollUpdate,{passive:true});
       const rsvpObserver = new IntersectionObserver(entries => {
