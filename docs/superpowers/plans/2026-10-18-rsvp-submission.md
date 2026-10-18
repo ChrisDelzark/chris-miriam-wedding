@@ -367,7 +367,7 @@ test("hostile guest text is inert everywhere", () => {
   - `checkPasscode(passcode: string, hash: string): Promise<boolean>` (bcryptjs `compare`)
   - `type AdminDeps = { store: RsvpStore; limiter: RateLimiter; config: () => AppConfig; now: () => Date; log: {...} }`
   - `createAdminLoginHandler`, `createAdminLogoutHandler`, `createRsvpListHandler` (each `(deps: AdminDeps) => (req) => Promise<HttpResponseInit>`)
-  - Routes: `POST /api/admin/login` body `{ email, passcode }`; `POST /api/admin/logout`; `GET /api/rsvps` → `{ rsvps: RsvpRecord[] (newest lastUpdatedAt first, without rowKey), totals }`
+  - Routes: `POST /api/auth/login` body `{ email, passcode }`; `POST /api/auth/logout`; `GET /api/rsvps` → `{ rsvps: RsvpRecord[] (newest lastUpdatedAt first, without rowKey), totals }`
   - Login limit: bucket `login:${ipHash}`, window 900 s, limit 10 attempts.
   - `scripts/hash-passcode.ts`: reads the passcode from stdin (not argv, so it stays out of shell history), prints the bcrypt hash (cost 12).
 

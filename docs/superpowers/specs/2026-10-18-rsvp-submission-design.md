@@ -96,8 +96,8 @@ Azure Table Storage, one table (e.g. `rsvps`).
   - honeypot: a hidden field that must be empty; if filled, respond as success but store and send nothing
   - rate limit per client IP (hashed), stored in Table Storage
   - Responses: `200 {ok:true}`, `400` with per-field messages, `429` when rate limited, `500` when the save fails. Error bodies never include internal details.
-- `POST /api/admin/login` — body `{email, passcode}`. Succeeds only when the email is on the admin allowlist **and** the passcode matches. Sets a signed session cookie. Failed attempts are rate limited per IP.
-- `POST /api/admin/logout` — clears the session cookie.
+- `POST /api/auth/login` — body `{email, passcode}`. Succeeds only when the email is on the admin allowlist **and** the passcode matches. Sets a signed session cookie. Failed attempts are rate limited per IP.
+- `POST /api/auth/logout` — clears the session cookie.
 - `GET /api/rsvps` — requires a valid admin session cookie; otherwise `401`. Returns all rows plus totals.
 
 ### Admin page

@@ -14,6 +14,7 @@ import type { RsvpRecord } from "../src/rsvp/model"
 const SECRET = "s".repeat(32)
 const NOW = new Date("2026-10-18T10:00:00Z")
 const DAY_MS = 24 * 60 * 60 * 1000
+const NO_STORE = { "Cache-Control": "no-store" }
 const PASSCODE = "correct horse"
 const CONFIG: AppConfig = {
   storageConnectionString: "UseDevelopmentStorage=true",
@@ -66,7 +67,7 @@ function setup(
     createAdminLoginHandler(deps)(
       new HttpRequest({
         method: "POST",
-        url: "http://localhost/api/admin/login",
+        url: "http://localhost/api/auth/login",
         body: { string: JSON.stringify(body) },
       })
     )
@@ -118,7 +119,7 @@ describe("admin session", () => {
   })
 })
 
-describe("POST /api/admin/login", () => {
+describe("POST /api/auth/login", () => {
   const denied = { message: "That email and passcode don't match." }
 
   it("sets the session cookie for an allowlisted email in any case", async () => {
@@ -127,6 +128,7 @@ describe("POST /api/admin/login", () => {
       passcode: PASSCODE,
     })
     expect(response.status).toBe(200)
+    expect(response.headers).toEqual(NO_STORE)
     expect(response.cookies?.[0]).toMatchObject({
       name: "cm_admin",
       httpOnly: true,
@@ -149,6 +151,7 @@ describe("POST /api/admin/login", () => {
     })
     expect(wrongPasscode.status).toBe(401)
     expect(wrongPasscode.jsonBody).toEqual(denied)
+    expect(wrongPasscode.headers).toEqual(NO_STORE)
     expect(unlisted.status).toBe(401)
     expect(unlisted.jsonBody).toEqual(denied)
   })
@@ -171,7 +174,7 @@ describe("POST /api/admin/login", () => {
   })
 })
 
-describe("POST /api/admin/logout", () => {
+describe("POST /api/auth/logout", () => {
   it("expires the cookie", async () => {
     const response = await setup().logout()
     expect(response.status).toBe(200)
@@ -183,7 +186,9 @@ describe("GET /api/rsvps", () => {
   const validCookie = `other=1; cm_admin=${createSessionCookie("admin@example.com", SECRET, NOW)}`
 
   it("rejects requests without a session", async () => {
-    expect((await setup().list()).status).toBe(401)
+    const response = await setup().list()
+    expect(response.status).toBe(401)
+    expect(response.headers).toEqual(NO_STORE)
   })
 
   it("lists newest first with totals and no rowKey", async () => {
@@ -193,6 +198,7 @@ describe("GET /api/rsvps", () => {
     ]
     const response = await setup({ rows }).list(validCookie)
     expect(response.status).toBe(200)
+    expect(response.headers).toEqual(NO_STORE)
     const body = response.jsonBody as {
       rsvps: Array<Record<string, unknown>>
       totals: unknown

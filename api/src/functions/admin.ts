@@ -24,6 +24,9 @@ const LOGIN_LIMIT = 10
 const MAX_EMAIL_LENGTH = 254
 const MAX_PASSCODE_LENGTH = 200
 
+// Admin responses carry guest data or session state; no cache may keep them.
+const NO_STORE_HEADERS = { "Cache-Control": "no-store" }
+
 const cookieBase = {
   httpOnly: true,
   secure: true,
@@ -33,6 +36,7 @@ const cookieBase = {
 
 const serverError = (): HttpResponseInit => ({
   status: 500,
+  headers: NO_STORE_HEADERS,
   jsonBody: { message: "Something went wrong. Please try again." },
 })
 
@@ -76,6 +80,7 @@ export function createAdminLoginHandler(deps: AdminDeps) {
     } catch {
       return {
         status: 400,
+        headers: NO_STORE_HEADERS,
         jsonBody: { message: "Request body must be JSON." },
       }
     }
@@ -83,6 +88,7 @@ export function createAdminLoginHandler(deps: AdminDeps) {
     if (!login) {
       return {
         status: 400,
+        headers: NO_STORE_HEADERS,
         jsonBody: { message: "Enter your email and passcode." },
       }
     }
@@ -98,6 +104,7 @@ export function createAdminLoginHandler(deps: AdminDeps) {
       if (limited) {
         return {
           status: 429,
+          headers: NO_STORE_HEADERS,
           jsonBody: { message: "Too many attempts. Please try again later." },
         }
       }
@@ -110,12 +117,14 @@ export function createAdminLoginHandler(deps: AdminDeps) {
       if (!listed || !passcodeOk) {
         return {
           status: 401,
+          headers: NO_STORE_HEADERS,
           jsonBody: { message: "That email and passcode don't match." },
         }
       }
 
       return {
         status: 200,
+        headers: NO_STORE_HEADERS,
         jsonBody: { ok: true },
         cookies: [
           {
@@ -141,6 +150,7 @@ export function createAdminLogoutHandler(_deps: AdminDeps) {
   return async function adminLogoutHandler(): Promise<HttpResponseInit> {
     return {
       status: 200,
+      headers: NO_STORE_HEADERS,
       jsonBody: { ok: true },
       cookies: [{ ...cookieBase, name: SESSION_COOKIE, value: "", maxAge: 0 }],
     }
@@ -160,7 +170,11 @@ export function createRsvpListHandler(deps: AdminDeps) {
         deps.now()
       )
       if (email === null) {
-        return { status: 401, jsonBody: { message: "Please sign in." } }
+        return {
+          status: 401,
+          headers: NO_STORE_HEADERS,
+          jsonBody: { message: "Please sign in." },
+        }
       }
 
       const records = await deps.store.list()
@@ -169,6 +183,7 @@ export function createRsvpListHandler(deps: AdminDeps) {
         .map(({ rowKey: _rowKey, ...rest }) => rest)
       return {
         status: 200,
+        headers: NO_STORE_HEADERS,
         jsonBody: { rsvps, totals: computeTotals(records) },
       }
     } catch (error) {
@@ -181,14 +196,14 @@ export function createRsvpListHandler(deps: AdminDeps) {
 app.http("adminLogin", {
   methods: ["POST"],
   authLevel: "anonymous",
-  route: "admin/login",
+  route: "auth/login",
   handler: (request) => createAdminLoginHandler(productionDeps())(request),
 })
 
 app.http("adminLogout", {
   methods: ["POST"],
   authLevel: "anonymous",
-  route: "admin/logout",
+  route: "auth/logout",
   handler: () => createAdminLogoutHandler(productionDeps())(),
 })
 

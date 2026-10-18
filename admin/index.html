@@ -246,7 +246,7 @@
       error.textContent = ""
       button.disabled = true
       try {
-        const response = await api("/api/admin/login", {
+        const response = await api("/api/auth/login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ email: $("email").value, passcode: $("passcode").value }),
@@ -271,7 +271,7 @@
 
     async function signOut() {
       try {
-        await api("/api/admin/logout", { method: "POST" })
+        await api("/api/auth/logout", { method: "POST" })
       } catch {
         // Cookie clears server-side only on success; fall through so the user sees the sign-in screen.
       }
