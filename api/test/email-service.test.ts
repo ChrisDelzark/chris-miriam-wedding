@@ -57,17 +57,40 @@ describe("createAzureEmailSender", () => {
     await expect(sender.send(email)).rejects.toThrow(/not configured/)
   })
 
-  it("rejects after the timeout", async () => {
-    const sender = createAzureEmailSender({
+  const senderWith = (client: unknown) =>
+    createAzureEmailSender({
       connectionString: "endpoint=https://x;accesskey=k",
       senderAddress: "from@x.com",
       timeoutMs: 20,
-      clientFactory: () => fakeClient(() => new Promise(() => {})),
+      clientFactory: () => client as never,
     })
+
+  it("counts an accepted send as sent when polling outlasts the timeout", async () => {
+    const sender = senderWith(fakeClient(() => new Promise(() => {})))
+
+    const started = Date.now()
+    await expect(sender.send(email)).resolves.toBeUndefined()
+    expect(Date.now() - started).toBeLessThan(200)
+  })
+
+  it("rejects when beginSend outlasts the timeout", async () => {
+    const sender = senderWith({ beginSend: () => new Promise(() => {}) })
 
     const started = Date.now()
     await expect(sender.send(email)).rejects.toThrow(/timed out/)
     expect(Date.now() - started).toBeLessThan(200)
+  })
+
+  it("rejects when polling throws or reports a failed send", async () => {
+    const throwing = senderWith(
+      fakeClient(async () => {
+        throw new Error("poll failed accesskey=k")
+      })
+    )
+    const failed = senderWith(fakeClient(async () => ({ status: "Failed" })))
+
+    await expect(throwing.send(email)).rejects.toThrow("Email send failed")
+    await expect(failed.send(email)).rejects.toThrow("Email send failed")
   })
 
   it("error never contains the connection string", async () => {

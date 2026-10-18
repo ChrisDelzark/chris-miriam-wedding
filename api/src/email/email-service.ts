@@ -1,4 +1,8 @@
-import { EmailClient, type EmailMessage } from "@azure/communication-email"
+import {
+  EmailClient,
+  type EmailMessage,
+  type EmailSendResult,
+} from "@azure/communication-email"
 
 export const EMAIL_TIMEOUT_MS = 10_000
 
@@ -15,6 +19,10 @@ export interface EmailSender {
 }
 
 type EmailClientLike = Pick<EmailClient, "beginSend">
+type EmailPoller = Awaited<ReturnType<EmailClientLike["beginSend"]>>
+
+const BUDGET_SPENT = Symbol("budget spent")
+const FAILED_STATUSES = new Set(["Failed", "Canceled"])
 
 export type AzureEmailSenderOptions = {
   connectionString: string | undefined
@@ -47,13 +55,20 @@ export function createAzureEmailSender(
     return client
   }
 
-  async function deliver(
+  async function accept(
     emailClient: EmailClientLike,
     message: EmailMessage
-  ): Promise<void> {
+  ): Promise<EmailPoller> {
     try {
-      const poller = await emailClient.beginSend(message)
-      await poller.pollUntilDone()
+      return await emailClient.beginSend(message)
+    } catch {
+      throw new Error("Email send failed")
+    }
+  }
+
+  async function poll(poller: EmailPoller): Promise<EmailSendResult> {
+    try {
+      return await poller.pollUntilDone()
     } catch {
       throw new Error("Email send failed")
     }
@@ -78,14 +93,23 @@ export function createAzureEmailSender(
       }
 
       let timer: NodeJS.Timeout | undefined
-      const timeout = new Promise<never>((_, reject) => {
-        timer = setTimeout(
-          () => reject(new Error(`Email send timed out after ${timeoutMs}ms`)),
-          timeoutMs
-        )
+      const budgetSpent = new Promise<typeof BUDGET_SPENT>((resolve) => {
+        timer = setTimeout(() => resolve(BUDGET_SPENT), timeoutMs)
       })
       try {
-        await Promise.race([deliver(emailClient, message), timeout])
+        const poller = await Promise.race([
+          accept(emailClient, message),
+          budgetSpent,
+        ])
+        if (poller === BUDGET_SPENT) {
+          throw new Error(`Email send timed out after ${timeoutMs}ms`)
+        }
+        // ACS has accepted the message, so it counts as sent unless delivery
+        // reports a failure within what is left of the budget.
+        const result = await Promise.race([poll(poller), budgetSpent])
+        if (result !== BUDGET_SPENT && FAILED_STATUSES.has(result.status)) {
+          throw new Error("Email send failed")
+        }
       } finally {
         clearTimeout(timer)
       }
