@@ -105,6 +105,12 @@ test("couple email links and totals", () => {
   expect(e.html).toContain('href="mailto:adaeze@example.com"')
 })
 
+test("couple email omits the totals line when totals are unavailable", () => {
+  const e = renderCoupleEmail({ record: base, change: "new", siteUrl: site })
+  expect(e.html).not.toContain("So far:")
+  expect(e.text).not.toContain("So far:")
+})
+
 test("no WhatsApp button when the number can't be converted", () => {
   expect(
     renderCoupleEmail({

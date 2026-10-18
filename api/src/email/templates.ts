@@ -190,7 +190,7 @@ function detailRow(label: string, value: string, last: boolean): string {
 export function renderCoupleEmail(args: {
   record: RsvpRecord
   change: SubmissionChange
-  totals: Totals
+  totals?: Totals
   siteUrl: string
 }): RenderedEmail {
   const { record, change, totals, siteUrl } = args
@@ -202,7 +202,6 @@ export function renderCoupleEmail(args: {
   const telPhone = record.phone.replace(/\s+/g, "")
   const previous =
     change === "changed" ? `Previously: ${previousAnswer(record)}` : null
-  const totalsLine = `So far: ${totals.accepted} accepted bringing ${guestCount(totals.guests)}, and ${totals.declined} declined.`
 
   const safeEmail = escapeHtml(record.email)
   const link = (href: string, text: string): string =>
@@ -257,10 +256,12 @@ export function renderCoupleEmail(args: {
 ${details.join("\n")}
 </table>
 </td></tr>`,
-    bodyRow(
-      `So far: <span style="color:#f0ce83;">${totals.accepted} accepted</span> bringing <span style="color:#f0ce83;">${guestCount(totals.guests)}</span>, and ${totals.declined} declined.`,
-      { color: "#e3cfb0", size: 15, top: 26 }
-    ),
+    totals === undefined
+      ? ""
+      : bodyRow(
+          `So far: <span style="color:#f0ce83;">${totals.accepted} accepted</span> bringing <span style="color:#f0ce83;">${guestCount(totals.guests)}</span>, and ${totals.declined} declined.`,
+          { color: "#e3cfb0", size: 15, top: 26 }
+        ),
     buttonsRow(buttons),
   ].join("\n")
 
@@ -273,8 +274,12 @@ ${details.join("\n")}
     `Phone: ${record.phone}`,
     ...(record.message === "" ? [] : [`Message: ${record.message}`]),
     "",
-    totalsLine,
-    "",
+    ...(totals === undefined
+      ? []
+      : [
+          `So far: ${totals.accepted} accepted bringing ${guestCount(totals.guests)}, and ${totals.declined} declined.`,
+          "",
+        ]),
     ...(whatsApp === null ? [] : [`WhatsApp: https://wa.me/${whatsApp}`]),
     `See all RSVPs: ${adminUrl}`,
   ].join("\n")

@@ -144,6 +144,34 @@ describe("POST /api/rsvp", () => {
     expect(errors.length).toBeGreaterThan(0)
   })
 
+  it("totals failure after save still emails and succeeds", async () => {
+    const rows = new Map<string, RsvpRecord>()
+    const { post, sent, errors } = setup({
+      store: {
+        get: async () => null,
+        put: async (record) => void rows.set(record.rowKey, record),
+        setEmailStatus: async (key, status) => {
+          const row = rows.get(key)
+          if (row) rows.set(key, { ...row, ...status })
+        },
+        list: async () => {
+          throw new Error("list failed")
+        },
+      },
+    })
+    const response = await post(validBody)
+    expect(response.status).toBe(200)
+    expect(sent).toHaveLength(2)
+    const couple = sent.find((m) => m.to.includes(COUPLE[0]))
+    expect(couple?.text).not.toContain("So far:")
+    const row = [...rows.values()][0]
+    expect([row.guestEmailStatus, row.coupleEmailStatus]).toEqual([
+      "sent",
+      "sent",
+    ])
+    expect(errors).toHaveLength(1)
+  })
+
   it("email failure still succeeds", async () => {
     const { post, rows, errors } = setup({ failSendTo: COUPLE[0] })
     const response = await post(validBody)

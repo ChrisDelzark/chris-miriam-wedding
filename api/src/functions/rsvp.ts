@@ -49,6 +49,18 @@ function status(result: PromiseSettledResult<void>): EmailStatus {
   return result.status === "fulfilled" ? "sent" : "failed"
 }
 
+// The RSVP is already saved, so a failed read only drops the couple's tally.
+async function loadTotals(
+  deps: RsvpDeps
+): Promise<ReturnType<typeof computeTotals> | undefined> {
+  try {
+    return computeTotals(await deps.store.list())
+  } catch (error) {
+    deps.log.error("Loading RSVP totals failed", error)
+    return undefined
+  }
+}
+
 export function createRsvpHandler(deps: RsvpDeps) {
   return async function rsvpHandler(
     request: HttpRequest
@@ -98,7 +110,7 @@ export function createRsvpHandler(deps: RsvpDeps) {
       )
       await deps.store.put(record)
 
-      const totals = computeTotals(await deps.store.list())
+      const totals = await loadTotals(deps)
       const guestMail = renderGuestEmail(record, config.siteUrl)
       const coupleMail = renderCoupleEmail({
         record,
