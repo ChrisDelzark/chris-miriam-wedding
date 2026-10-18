@@ -85,12 +85,17 @@ function setup(
 
 describe("admin session", () => {
   const allowed = ["admin@example.com"]
-  const cookie = () => createSessionCookie("Admin@Example.com", SECRET, NOW)
+  const cookie = () => createSessionCookie("Admin@Example.com", CONFIG, NOW)
 
   it("round-trips the email", () => {
-    expect(verifySession(cookie(), SECRET, allowed, NOW)).toBe(
+    expect(verifySession(cookie(), CONFIG, allowed, NOW)).toBe(
       "admin@example.com"
     )
+  })
+
+  it("revokes existing sessions when the passcode hash changes", () => {
+    const rotated = { ...CONFIG, adminPasscodeHash: bcrypt.hashSync("new", 4) }
+    expect(verifySession(cookie(), rotated, allowed, NOW)).toBeNull()
   })
 
   it("rejects tampered, expired, delisted, wrong-secret and malformed values", () => {
@@ -99,22 +104,29 @@ describe("admin session", () => {
       JSON.stringify({ e: "evil@example.com", exp: NOW.getTime() + DAY_MS })
     ).toString("base64url")
     expect(
-      verifySession(`${forged}.${signature}`, SECRET, allowed, NOW)
+      verifySession(`${forged}.${signature}`, CONFIG, allowed, NOW)
     ).toBeNull()
     expect(
       verifySession(
         cookie(),
-        SECRET,
+        CONFIG,
         allowed,
         new Date(NOW.getTime() + 8 * DAY_MS)
       )
     ).toBeNull()
     expect(
-      verifySession(cookie(), SECRET, ["other@example.com"], NOW)
+      verifySession(cookie(), CONFIG, ["other@example.com"], NOW)
     ).toBeNull()
-    expect(verifySession(cookie(), "x".repeat(32), allowed, NOW)).toBeNull()
+    expect(
+      verifySession(
+        cookie(),
+        { ...CONFIG, sessionSecret: "x".repeat(32) },
+        allowed,
+        NOW
+      )
+    ).toBeNull()
     for (const bad of [undefined, "", "a.b.c", "%%", `${payload}.`]) {
-      expect(verifySession(bad, SECRET, allowed, NOW)).toBeNull()
+      expect(verifySession(bad, CONFIG, allowed, NOW)).toBeNull()
     }
   })
 })
@@ -183,7 +195,7 @@ describe("POST /api/auth/logout", () => {
 })
 
 describe("GET /api/rsvps", () => {
-  const validCookie = `other=1; cm_admin=${createSessionCookie("admin@example.com", SECRET, NOW)}`
+  const validCookie = `other=1; cm_admin=${createSessionCookie("admin@example.com", CONFIG, NOW)}`
 
   it("rejects requests without a session", async () => {
     const response = await setup().list()

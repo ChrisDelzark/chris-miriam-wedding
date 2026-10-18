@@ -130,11 +130,7 @@ export function createAdminLoginHandler(deps: AdminDeps) {
           {
             ...cookieBase,
             name: SESSION_COOKIE,
-            value: createSessionCookie(
-              login.email,
-              config.sessionSecret,
-              deps.now()
-            ),
+            value: createSessionCookie(login.email, config, deps.now()),
             maxAge: SESSION_SECONDS,
           },
         ],
@@ -165,7 +161,7 @@ export function createRsvpListHandler(deps: AdminDeps) {
       const config = deps.config()
       const email = verifySession(
         readCookie(request, SESSION_COOKIE),
-        config.sessionSecret,
+        config,
         config.adminEmails,
         deps.now()
       )
