@@ -1,18 +1,21 @@
 import { createAzureEmailSender, EMAIL_TIMEOUT_MS } from "./email/email-service"
 import { readConfig } from "./config"
+import type { AdminDeps } from "./functions/admin"
 import type { RsvpDeps } from "./functions/rsvp"
 import { createTableRateLimiter } from "./storage/table-rate-limiter"
 import { createTableRsvpStore } from "./storage/table-rsvp-store"
 
-let cached: RsvpDeps | undefined
+type ProductionDeps = RsvpDeps & AdminDeps
+
+let cached: ProductionDeps | undefined
 
 // Built on first call, not at import, so a bad setting cannot stop functions
 // from registering. Config is read per request through `config()`.
-export function productionDeps(): RsvpDeps {
+export function productionDeps(): ProductionDeps {
   if (cached) return cached
   const config = () => readConfig(process.env)
-  let store: RsvpDeps["store"] | undefined
-  let limiter: RsvpDeps["limiter"] | undefined
+  let store: ProductionDeps["store"] | undefined
+  let limiter: ProductionDeps["limiter"] | undefined
 
   cached = {
     get store() {
