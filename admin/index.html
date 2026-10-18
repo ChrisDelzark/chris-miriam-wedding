@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>RSVP list · Chris &amp; Miriam</title>
+  <style>
+    :root {
+      --night: #080201;
+      --oxblood: #3d0b0c;
+      --gold: #d9a84c;
+      --gold-bright: #f0ce83;
+      --ivory: #f5e9d6;
+      --muted: #c5a77d;
+      --danger: #ff9d8f;
+      --serif: Didot, "Bodoni 72", "Bodoni MT", "Times New Roman", serif;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      padding: 24px 16px 48px;
+      background: radial-gradient(circle at 50% 0%, #2a0708, var(--night) 70%);
+      color: var(--ivory);
+      font-family: var(--serif);
+      line-height: 1.5;
+    }
+    main { width: min(100%, 680px); margin: 0 auto; }
+    [hidden] { display: none !important; }
+    h1 { margin: 0 0 24px; color: var(--gold-bright); font-size: clamp(26px, 7vw, 38px); font-weight: 400; letter-spacing: .16em; text-align: center; text-transform: uppercase; }
+    .panel {
+      padding: 26px 18px 28px;
+      border: 1px solid rgba(218,168,79,.72);
+      border-radius: 24px;
+      background: linear-gradient(165deg, rgba(77,16,17,.96), rgba(35,6,6,.98) 72%);
+      box-shadow: 0 30px 72px rgba(0,0,0,.44), inset 0 1px 0 rgba(255,255,255,.04);
+    }
+    .form-grid { display: grid; gap: 20px; }
+    .field { display: grid; gap: 8px; }
+    .field-label { color: var(--gold-bright); font-size: 12px; font-weight: 600; letter-spacing: .16em; text-transform: uppercase; }
+    .text-input {
+      width: 100%;
+      height: 54px;
+      padding: 0 15px;
+      border: 1px solid rgba(216,164,76,.44);
+      border-radius: 10px;
+      background: rgba(18,3,3,.44);
+      color: var(--ivory);
+      font-family: var(--serif);
+      font-size: 16px;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .text-input:focus { border-color: var(--gold-bright); box-shadow: 0 0 0 3px rgba(216,164,76,.13); }
+    .button {
+      min-height: 54px;
+      padding: 0 20px;
+      border: 1px solid var(--gold-bright);
+      border-radius: 10px;
+      background: linear-gradient(135deg, #b77f2d, #f1cf83 48%, #ad7222);
+      color: #2b0908;
+      font-family: var(--serif);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+    .button.secondary { background: transparent; color: var(--gold-bright); border-color: rgba(216,164,76,.6); }
+    .button:hover { filter: brightness(1.08); }
+    .button:disabled { opacity: .6; cursor: progress; }
+    .button:focus-visible, a:focus-visible { outline: 2px solid var(--ivory); outline-offset: 3px; }
+    .error { min-height: 22px; margin: 0; color: var(--danger); font-family: system-ui, sans-serif; font-size: 14px; }
+    .toolbar { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .totals { margin: 0 0 20px; color: var(--gold-bright); font-size: 18px; text-align: center; letter-spacing: .04em; }
+    .cards { display: grid; gap: 14px; margin: 0; padding: 0; list-style: none; }
+    .card { padding: 16px; border: 1px solid rgba(216,164,76,.44); border-radius: 14px; background: rgba(18,3,3,.44); overflow-wrap: anywhere; }
+    .card h2 { margin: 0 0 4px; color: var(--gold-bright); font-size: 20px; font-weight: 600; }
+    .card p { margin: 6px 0 0; }
+    .response { color: var(--ivory); }
+    .response.declines { color: var(--muted); }
+    .changed, .meta { color: var(--muted); font-size: 14px; }
+    .warn { color: var(--danger); font-size: 14px; }
+    .contact { display: flex; flex-wrap: wrap; gap: 4px 16px; font-family: system-ui, sans-serif; font-size: 14px; }
+    .contact a { display: inline-flex; align-items: center; min-height: 44px; color: var(--gold-bright); }
+    .message { font-style: italic; white-space: pre-wrap; }
+    .empty { text-align: center; color: var(--muted); }
+    @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Chris &amp; Miriam</h1>
+
+    <section id="signin-view" class="panel" hidden>
+      <form id="signin-form" class="form-grid" novalidate>
+        <div class="field">
+          <label class="field-label" for="email">Email</label>
+          <input class="text-input" id="email" name="email" type="email" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label class="field-label" for="passcode">Passcode</label>
+          <input class="text-input" id="passcode" name="passcode" type="password" autocomplete="current-password" required>
+        </div>
+        <p class="error" id="signin-error" role="alert"></p>
+        <button class="button" id="signin-button" type="submit">Sign in</button>
+      </form>
+    </section>
+
+    <section id="list-view" hidden>
+      <div class="toolbar">
+        <button class="button secondary" id="csv-button" type="button">Download CSV</button>
+        <button class="button secondary" id="signout-button" type="button">Sign out</button>
+      </div>
+      <p class="error" id="list-error" role="alert"></p>
+      <p class="totals" id="totals"></p>
+      <ul class="cards" id="cards"></ul>
+    </section>
+
+    <p class="empty" id="loading">Loading…</p>
+  </main>
+
+  <script>
+    "use strict"
+
+    const REQUEST_TIMEOUT_MS = 15000
+    const NETWORK_MESSAGE = "Something went wrong. Check your connection and try again."
+
+    const $ = (id) => document.getElementById(id)
+    let currentRsvps = []
+
+    async function api(path, options) {
+      const controller = new AbortController()
+      const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS)
+      try {
+        return await fetch(path, {
+          credentials: "same-origin",
+          ...options,
+          signal: controller.signal,
+        })
+      } finally {
+        clearTimeout(timer)
+      }
+    }
+
+    function showView(name) {
+      $("loading").hidden = true
+      $("signin-view").hidden = name !== "signin"
+      $("list-view").hidden = name !== "list"
+    }
+
+    function el(tag, text, className) {
+      const node = document.createElement(tag)
+      if (text !== undefined) node.textContent = text
+      if (className) node.className = className
+      return node
+    }
+
+    function link(text, href) {
+      const a = el("a", text)
+      a.setAttribute("href", href)
+      return a
+    }
+
+    // Same rule as api/src/rsvp/phone.ts.
+    function toWhatsAppNumber(phone) {
+      const digits = String(phone).replace(/\D/g, "")
+      if (digits.startsWith("0") && digits.length === 11) return "234" + digits.slice(1)
+      if (digits.length >= 10 && digits.length <= 15) return digits
+      return null
+    }
+
+    function formatDate(iso) {
+      const date = new Date(iso)
+      return Number.isNaN(date.getTime()) ? "" : date.toLocaleString([], { dateStyle: "medium", timeStyle: "short" })
+    }
+
+    function responseLabel(r) {
+      return r.attendance === "accepts"
+        ? "Joyfully accepts · party of " + r.partySize
+        : "Regretfully declines"
+    }
+
+    function previousLabel(r) {
+      if (!r.previousAttendance) return ""
+      const was = r.previousAttendance === "accepts"
+        ? "accepted, party of " + r.previousPartySize
+        : "declined"
+      return "Changed their response (previously " + was + ")"
+    }
+
+    function renderCard(r) {
+      const card = el("li", undefined, "card")
+      card.appendChild(el("h2", r.name))
+      card.appendChild(el("p", responseLabel(r), "response " + (r.attendance === "accepts" ? "accepts" : "declines")))
+      const changed = previousLabel(r)
+      if (changed) card.appendChild(el("p", changed, "changed"))
+
+      const contact = el("p", undefined, "contact")
+      if (r.phone) {
+        contact.appendChild(link(r.phone, "tel:" + r.phone.replace(/[^\d+]/g, "")))
+        const number = toWhatsAppNumber(r.phone)
+        if (number) contact.appendChild(link("WhatsApp", "https://wa.me/" + number))
+      }
+      if (r.email) contact.appendChild(link(r.email, "mailto:" + encodeURIComponent(r.email)))
+      card.appendChild(contact)
+
+      if (r.message) card.appendChild(el("p", r.message, "message"))
+      card.appendChild(el("p", "Updated " + formatDate(r.lastUpdatedAt), "meta"))
+      if (r.guestEmailStatus === "failed") card.appendChild(el("p", "Guest confirmation email failed", "warn"))
+      if (r.coupleEmailStatus === "failed") card.appendChild(el("p", "Couple notification email failed", "warn"))
+      return card
+    }
+
+    function renderList(data) {
+      currentRsvps = data.rsvps
+      const t = data.totals
+      $("totals").textContent = t.accepted + " accepted · " + t.guests + " guests · " + t.declined + " declined"
+      const cards = $("cards")
+      cards.replaceChildren()
+      if (currentRsvps.length === 0) {
+        cards.appendChild(el("li", "No RSVPs yet.", "empty"))
+      }
+      for (const r of currentRsvps) cards.appendChild(renderCard(r))
+    }
+
+    async function loadList() {
+      $("list-error").textContent = ""
+      try {
+        const response = await api("/api/rsvps")
+        if (response.status === 401) return showView("signin")
+        if (!response.ok) throw new Error("status " + response.status)
+        renderList(await response.json())
+        showView("list")
+      } catch {
+        showView("list")
+        $("list-error").textContent = NETWORK_MESSAGE
+      }
+    }
+
+    async function signIn(event) {
+      event.preventDefault()
+      const button = $("signin-button")
+      const error = $("signin-error")
+      error.textContent = ""
+      button.disabled = true
+      try {
+        const response = await api("/api/admin/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: $("email").value, passcode: $("passcode").value }),
+        })
+        if (response.ok) {
+          $("passcode").value = ""
+          await loadList()
+        } else if (response.status === 429) {
+          error.textContent = "Too many sign-in attempts. Please wait 15 minutes and try again."
+        } else if (response.status === 401 || response.status === 400) {
+          const body = await response.json().catch(() => ({}))
+          error.textContent = typeof body.message === "string" ? body.message : "Enter your email and passcode."
+        } else {
+          error.textContent = NETWORK_MESSAGE
+        }
+      } catch {
+        error.textContent = NETWORK_MESSAGE
+      } finally {
+        button.disabled = false
+      }
+    }
+
+    async function signOut() {
+      try {
+        await api("/api/admin/logout", { method: "POST" })
+      } catch {
+        // Cookie clears server-side only on success; fall through so the user sees the sign-in screen.
+      }
+      currentRsvps = []
+      $("cards").replaceChildren()
+      showView("signin")
+    }
+
+    function escapeCsvCell(value) {
+      let text = String(value ?? "")
+      if (/^[=+\-@\t\r]/.test(text)) text = "'" + text
+      return '"' + text.replace(/"/g, '""') + '"'
+    }
+
+    function buildCsv(rsvps) {
+      const header = ["Name", "Email", "Phone", "Response", "Party size", "Message", "First submitted", "Last updated", "Times submitted", "Guest email", "Couple email"]
+      const rows = rsvps.map((r) => [
+        r.name, r.email, r.phone, r.attendance, r.partySize, r.message,
+        r.firstSubmittedAt, r.lastUpdatedAt, r.submissionCount, r.guestEmailStatus, r.coupleEmailStatus,
+      ])
+      return [header, ...rows].map((row) => row.map(escapeCsvCell).join(",")).join("\r\n")
+    }
+
+    function downloadCsv() {
+      const blob = new Blob(["﻿" + buildCsv(currentRsvps)], { type: "text/csv;charset=utf-8" })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement("a")
+      a.setAttribute("href", url)
+      a.setAttribute("download", "chris-miriam-rsvps.csv")
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      setTimeout(() => URL.revokeObjectURL(url), 1000)
+    }
+
+    $("signin-form").addEventListener("submit", signIn)
+    $("signout-button").addEventListener("click", signOut)
+    $("csv-button").addEventListener("click", downloadCsv)
+    loadList()
+  </script>
+</body>
+</html>
