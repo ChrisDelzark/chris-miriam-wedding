@@ -68,29 +68,24 @@ export function mergeSubmission(
     existing.attendance !== input.attendance ||
     existing.partySize !== input.partySize
 
-  if (!answerChanged) {
-    return {
-      change: "unchanged",
-      record: {
-        ...existing,
-        ...input,
-        lastUpdatedAt: timestamp,
-        submissionCount: existing.submissionCount + 1,
-      },
-    }
+  // Both emails are re-sent on every resubmission, so statuses always reset.
+  const resubmitted: RsvpRecord = {
+    ...existing,
+    ...input,
+    lastUpdatedAt: timestamp,
+    submissionCount: existing.submissionCount + 1,
+    guestEmailStatus: "pending",
+    coupleEmailStatus: "pending",
   }
+
+  if (!answerChanged) return { change: "unchanged", record: resubmitted }
 
   return {
     change: "changed",
     record: {
-      ...existing,
-      ...input,
-      lastUpdatedAt: timestamp,
-      submissionCount: existing.submissionCount + 1,
+      ...resubmitted,
       previousAttendance: existing.attendance,
       previousPartySize: existing.partySize,
-      guestEmailStatus: "pending",
-      coupleEmailStatus: "pending",
     },
   }
 }

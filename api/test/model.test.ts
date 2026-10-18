@@ -57,6 +57,43 @@ describe("mergeSubmission", () => {
       mergeSubmission(first, { ...input, message: "See you!" }, t1).change
     ).toBe("unchanged")
   })
+
+  test("every resubmission resets both email statuses to pending", () => {
+    const first = mergeSubmission(null, input, t0).record
+    const delivered = {
+      ...first,
+      guestEmailStatus: "sent" as const,
+      coupleEmailStatus: "failed" as const,
+    }
+    const changed = mergeSubmission(
+      delivered,
+      { ...input, attendance: "declines", partySize: 0 },
+      t1
+    )
+    expect(changed.record).toMatchObject({
+      guestEmailStatus: "pending",
+      coupleEmailStatus: "pending",
+    })
+
+    const withPrevious = {
+      ...changed.record,
+      guestEmailStatus: "sent" as const,
+      coupleEmailStatus: "failed" as const,
+    }
+    const unchanged = mergeSubmission(
+      withPrevious,
+      { ...input, attendance: "declines", partySize: 0 },
+      t1
+    )
+    expect(unchanged.change).toBe("unchanged")
+    expect(unchanged.record).toMatchObject({
+      guestEmailStatus: "pending",
+      coupleEmailStatus: "pending",
+      previousAttendance: "accepts",
+      previousPartySize: 2,
+      submissionCount: withPrevious.submissionCount + 1,
+    })
+  })
 })
 
 test("totals", () => {
