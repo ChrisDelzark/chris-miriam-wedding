@@ -1,0 +1,68 @@
+name: Deploy to Azure Static Web Apps
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: swa-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: "20"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+          cache-dependency-path: api/package-lock.json
+
+      # Copy only the public site paths; docs/, api/ and .nojekyll must not be uploaded as site content.
+      - name: Assemble static site
+        run: |
+          mkdir out
+          cp -R index.html assets admin staticwebapp.config.json out/
+
+      - name: Install API dependencies
+        working-directory: api
+        run: npm ci
+      - name: Typecheck API
+        working-directory: api
+        run: npm run typecheck
+      - name: Check API formatting
+        working-directory: api
+        run: npm run format:check
+      - name: Test API
+        working-directory: api
+        run: npm test
+      - name: Build API
+        working-directory: api
+        run: npm run build
+      - name: Drop API dev dependencies before upload
+        working-directory: api
+        run: npm prune --omit=dev
+
+      # Pull requests only validate; deploying from a PR would publish unreviewed code to production.
+      - name: Deploy to Azure Static Web Apps
+        if: github.event_name != 'pull_request'
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: upload
+          app_location: out
+          api_location: api
+          skip_app_build: true
+          skip_api_build: true
