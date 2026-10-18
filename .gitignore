@@ -1,0 +1,11 @@
+# Local tool output (Playwright screenshots/logs, brainstorming previews)
+.playwright-mcp/
+.superpowers/
+
+# macOS
+.DS_Store
+
+# RSVP API and static site build output
+api/node_modules/
+api/dist/
+out/

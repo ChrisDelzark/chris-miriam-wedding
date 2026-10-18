@@ -1,0 +1,27 @@
+{
+  "name": "chris-miriam-wedding-api",
+  "version": "0.0.1",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/index.js --tsconfig=tsconfig.json --external:@azure/functions",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "format": "prettier --write --no-error-on-unmatched-pattern \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\"",
+    "format:check": "prettier --check --no-error-on-unmatched-pattern \"src/**/*.ts\" \"test/**/*.ts\" \"scripts/**/*.ts\""
+  },
+  "dependencies": {
+    "@azure/communication-email": "^1.1.0",
+    "@azure/data-tables": "^13.3.2",
+    "@azure/functions": "^4.16.5",
+    "bcryptjs": "^3.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "esbuild": "^0.25.0",
+    "prettier": "^3.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.0"
+  }
+}
