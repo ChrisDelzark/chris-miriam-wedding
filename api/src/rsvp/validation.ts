@@ -15,6 +15,10 @@ export type ValidationResult =
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const PHONE_PATTERN = /^[0-9 +()-]+$/
+// Names land in email subjects and bodies, so only letters and name
+// punctuation are allowed, and anything shaped like a domain is refused.
+const NAME_PATTERN = /^[\p{L}\p{M}' ’.,&()\-]+( [\p{L}\p{M}' ’.,&()\-]+)*$/u
+const DOMAIN_LIKE_PATTERN = /[\p{L}\p{N}-]{2,}\.\p{L}{2,}/u
 
 function text(value: unknown): string {
   return typeof value === "string" ? value.trim() : ""
@@ -27,9 +31,12 @@ export function validateRsvp(body: unknown): ValidationResult {
   const input = body as Record<string, unknown>
   const fieldErrors: Record<string, string> = {}
 
-  const name = text(input.name)
+  // Only spaces are collapsed: a newline or tab must still fail the allowlist.
+  const name = text(input.name).replace(/ {2,}/g, " ")
   if (name.length < 1 || name.length > 100) {
     fieldErrors.name = "Enter your name (up to 100 characters)."
+  } else if (!NAME_PATTERN.test(name) || DOMAIN_LIKE_PATTERN.test(name)) {
+    fieldErrors.name = "Please enter your name using letters only."
   }
 
   const email = text(input.email).toLowerCase()

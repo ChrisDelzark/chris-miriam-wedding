@@ -184,7 +184,7 @@ The only throttles are the per-IP submission rate limit and the honeypot, which 
 - GitHub Pages is switched off (or replaced with a redirect to the new address) once the Static Web App is live, so no one can reach a "Send RSVP" button with no API behind it.
 - WhatsApp links assume Nigeria (+234) when a number starts with 0.
 - Couple gets one email per RSVP, sent to both addresses in a single message.
-- Rate limit numbers and the exact email time cap are left to the builder, but should be modest (a handful of submissions per IP per 10 minutes).
+- Rate limit numbers and the exact email time cap are left to the builder, but should be modest (10 submissions per IP per hour).
 - Azure resources are created manually (not in DDS's Terraform), set up live by the owner and Claude together.
 
 ## Left to the builder

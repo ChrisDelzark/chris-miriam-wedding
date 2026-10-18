@@ -23,7 +23,7 @@ export type RsvpDeps = {
   log: { error(message: string, err?: unknown): void }
 }
 
-const RATE_WINDOW_SECONDS = 600
+const RATE_WINDOW_SECONDS = 3600
 const RATE_LIMIT = 10
 
 function errorResponse(

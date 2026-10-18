@@ -52,6 +52,38 @@ test.each([
   expect(r.ok === false && r.fieldErrors[field]).toBeTruthy()
 })
 
+test.each([
+  "https://x.io",
+  "evil.com",
+  "Ada\u0007",
+  "Ada\u202Eeve",
+  "Ada\nBcc",
+])("rejects name %j", (name) => {
+  expect(validateRsvp({ ...good, name })).toEqual({
+    ok: false,
+    fieldErrors: { name: "Please enter your name using letters only." },
+  })
+})
+
+test.each([
+  "A.B. Okafor",
+  "Adaeze O’Neil-Okafor",
+  "José Müller",
+  "Chris & Miriam",
+])("accepts name %j", (name) => {
+  expect(validateRsvp({ ...good, name })).toMatchObject({
+    ok: true,
+    value: { name },
+  })
+})
+
+test("collapses runs of spaces inside a name", () => {
+  expect(validateRsvp({ ...good, name: " Adaeze   Okafor " })).toMatchObject({
+    ok: true,
+    value: { name: "Adaeze Okafor" },
+  })
+})
+
 test("rejects non-object bodies", () => {
   expect(validateRsvp(null).ok).toBe(false)
   expect(validateRsvp("x").ok).toBe(false)

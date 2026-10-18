@@ -126,6 +126,20 @@ describe("POST /api/rsvp", () => {
     expect(rows.size).toBe(0)
   })
 
+  it("limits 10 submissions per IP per hour", async () => {
+    const calls: Array<[string, number, number]> = []
+    const { post } = setup({
+      limiter: {
+        isLimited: async (bucket, windowSeconds, limit) => {
+          calls.push([bucket, windowSeconds, limit])
+          return false
+        },
+      },
+    })
+    await post(validBody)
+    expect(calls).toEqual([[expect.stringMatching(/^rsvp:/), 3600, 10]])
+  })
+
   it("500 when save fails, nothing sent", async () => {
     const { post, sent, errors } = setup({
       store: {
@@ -219,5 +233,19 @@ describe("clientIpHash", () => {
     expect(a).toBe(b)
     expect(a).toMatch(/^[0-9a-f]{64}$/)
     expect(clientIpHash(request({}))).not.toBe(a)
+  })
+
+  it("falls through an empty x-azure-clientip to x-forwarded-for", () => {
+    expect(
+      clientIpHash(
+        request({ "x-azure-clientip": "  ", "x-forwarded-for": "1.2.3.4" })
+      )
+    ).toBe(clientIpHash(request({ "x-azure-clientip": "1.2.3.4" })))
+  })
+
+  it("strips the port from a bracketed IPv6 address", () => {
+    expect(
+      clientIpHash(request({ "x-azure-clientip": "[2001:db8::1]:443" }))
+    ).toBe(clientIpHash(request({ "x-azure-clientip": "2001:db8::1" })))
   })
 })

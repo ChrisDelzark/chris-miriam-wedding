@@ -328,7 +328,7 @@ test("hostile guest text is inert everywhere", () => {
   - `type RsvpDeps = { store: RsvpStore; limiter: RateLimiter; email: EmailSender; config: () => AppConfig; now: () => Date; log: { error(msg: string, err?: unknown): void } }`
   - `createRsvpHandler(deps: RsvpDeps): (request: HttpRequest) => Promise<HttpResponseInit>`
   - `productionDeps(): RsvpDeps & AdminDeps` in `deps.ts` (built lazily on first call; `AdminDeps` defined in Task 6 — add its fields there)
-  - Submission limit: bucket `rsvp:${ipHash}`, window 600 s, limit 10.
+  - Submission limit: bucket `rsvp:${ipHash}`, window 3600 s, limit 10.
 
 - [ ] **Step 1: Write failing tests** with in-memory fakes (a `Map` store, a counting limiter, a recording email sender) and `new HttpRequest({ method: "POST", url: "http://localhost/api/rsvp", body: { string: JSON.stringify(body) }, headers: { "x-forwarded-for": "1.2.3.4:5678" } })`:
   - `"saves and emails guest and couple"`: 200 `{ ok: true }`; one stored row; two sends — guest `to=[guest]`, `replyTo=coupleEmails`; couple `to=coupleEmails`, `replyTo=[guest]`; row statuses `sent`/`sent`.
