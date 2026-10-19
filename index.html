@@ -1140,6 +1140,15 @@
         return true;
       }
 
+      function resetRsvpForm() {
+        rsvpForm.reset();
+        copyBox.hidden = true;
+        copyBox.value = '';
+        // The stepper is driven by script state, which form.reset() doesn't touch.
+        guests = 1;
+        updateAttendanceState('');
+      }
+
       async function sendRsvp(event) {
         event.preventDefault();
         if (sending || !formIsValid()) return;
@@ -1158,6 +1167,7 @@
             signal:controller.signal
           });
           if (response.ok) {
+            resetRsvpForm();
             shareStatus.textContent = 'RSVP sent. A confirmation is on its way to your email.';
           } else if (response.status===400) {
             const body = await response.json().catch(() => null);
