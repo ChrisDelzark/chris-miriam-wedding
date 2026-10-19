@@ -53,6 +53,27 @@
       transition: border-color .2s ease, box-shadow .2s ease;
     }
     .text-input:focus { border-color: var(--gold-bright); box-shadow: 0 0 0 3px rgba(216,164,76,.13); }
+    .passcode-wrap { position: relative; }
+    .passcode-wrap .text-input { padding-right: 56px; }
+    .reveal-button {
+      position: absolute;
+      top: 50%;
+      right: 5px;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 8px;
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      transform: translateY(-50%);
+    }
+    .reveal-button:hover, .reveal-button[aria-pressed="true"] { color: var(--gold-bright); }
+    .reveal-button:focus-visible { outline: 2px solid var(--ivory); outline-offset: -2px; }
+    .reveal-button svg { width: 22px; height: 22px; }
     .button {
       min-height: 54px;
       padding: 0 20px;
@@ -101,7 +122,13 @@
         </div>
         <div class="field">
           <label class="field-label" for="passcode">Passcode</label>
-          <input class="text-input" id="passcode" name="passcode" type="password" autocomplete="current-password" required>
+          <div class="passcode-wrap">
+            <input class="text-input" id="passcode" name="passcode" type="password" autocomplete="current-password" required>
+            <button class="reveal-button" id="passcode-toggle" type="button" aria-controls="passcode" aria-pressed="false" aria-label="Show passcode">
+              <svg id="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg id="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" hidden><path d="M9.9 4.24A9.1 9.1 0 0 1 12 4c6.5 0 10 7 10 7a17.6 17.6 0 0 1-2.16 3.19M6.6 6.6A17.4 17.4 0 0 0 2 12s3.5 7 10 7a9.7 9.7 0 0 0 5.4-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2M2 2l20 20"/></svg>
+            </button>
+          </div>
         </div>
         <p class="error" id="signin-error" role="alert"></p>
         <button class="button" id="signin-button" type="submit">Sign in</button>
@@ -241,6 +268,15 @@
       }
     }
 
+    function setPasscodeVisible(visible) {
+      const toggle = $("passcode-toggle")
+      $("passcode").type = visible ? "text" : "password"
+      toggle.setAttribute("aria-pressed", String(visible))
+      toggle.setAttribute("aria-label", visible ? "Hide passcode" : "Show passcode")
+      $("eye-open").toggleAttribute("hidden", visible)
+      $("eye-closed").toggleAttribute("hidden", !visible)
+    }
+
     async function signIn(event) {
       event.preventDefault()
       const button = $("signin-button")
@@ -255,6 +291,7 @@
         })
         if (response.ok) {
           $("passcode").value = ""
+          setPasscodeVisible(false)
           await loadList()
         } else if (response.status === 429) {
           error.textContent = "Too many sign-in attempts. Please wait 15 minutes and try again."
@@ -318,6 +355,9 @@
       setTimeout(() => URL.revokeObjectURL(url), 1000)
     }
 
+    $("passcode-toggle").addEventListener("click", () => {
+      setPasscodeVisible($("passcode").type === "password")
+    })
     $("signin-form").addEventListener("submit", signIn)
     $("signout-button").addEventListener("click", signOut)
     $("csv-button").addEventListener("click", downloadCsv)
