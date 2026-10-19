@@ -98,7 +98,7 @@ test("couple email links and totals", () => {
     siteUrl: site,
   })
   expect(e.html).toContain("https://wa.me/2348035550142")
-  expect(e.html).toContain(`${site}/admin/`)
+  expect(e.html).toContain(`${site}/cm-2026-admin-us/`)
   expect(e.html).toContain("32 accepted")
   expect(e.html).toContain("64 guests")
   expect(e.html).toContain('href="tel:08035550142"')

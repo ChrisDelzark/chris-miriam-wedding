@@ -197,7 +197,7 @@ export function renderCoupleEmail(args: {
   const accepts = record.attendance === "accepts"
   const firstName = firstNameOf(record.name)
   const label = answerLabel(record.attendance, record.partySize)
-  const adminUrl = `${siteUrl}/admin/`
+  const adminUrl = `${siteUrl}/cm-2026-admin-us/`
   const whatsApp = toWhatsAppNumber(record.phone)
   const telPhone = record.phone.replace(/\s+/g, "")
   const previous =

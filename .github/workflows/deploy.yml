@@ -34,7 +34,7 @@ jobs:
       - name: Assemble static site
         run: |
           mkdir out
-          cp -R index.html assets admin staticwebapp.config.json out/
+          cp -R index.html assets cm-2026-admin-us staticwebapp.config.json out/
 
       - name: Install API dependencies
         working-directory: api
