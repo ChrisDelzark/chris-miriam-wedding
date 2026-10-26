@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>RSVP email directions</title>
+<style>
+  :root {
+    --page: #e9e4de;
+    --ink: #2a1a17;
+    --muted: #6d5a52;
+    --pick: #8a1c1f;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+  .intro { max-width: 1240px; margin: 0 auto; padding: 32px 16px 8px; }
+  .intro h1 { margin: 0 0 6px; font: 400 30px/1.2 Didot, "Bodoni 72", Georgia, serif; }
+  .intro p { margin: 0; max-width: 70ch; color: var(--muted); line-height: 1.55; }
+  .direction { max-width: 1240px; margin: 28px auto 0; padding: 0 16px; }
+  .direction-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 16px; padding: 14px 18px; border: 2px solid transparent; border-radius: 12px; background: #f6f3ef; cursor: pointer; }
+  .direction-head:focus-visible { outline: 2px solid var(--pick); outline-offset: 2px; }
+  .direction-head.selected { border-color: var(--pick); }
+  .direction-head h2 { margin: 0; font: 400 22px/1.2 Didot, "Bodoni 72", Georgia, serif; }
+  .direction-head p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.5; flex: 1 1 420px; }
+  .direction-head .pick { font-size: 13px; color: var(--pick); }
+  .pair { display: flex; flex-wrap: wrap; justify-content: center; gap: 28px; margin-top: 16px; }
+  .inbox { width: 390px; max-width: 100%; background: #fff; border: 10px solid #1d1716; border-radius: 38px; overflow: hidden; box-shadow: 0 10px 30px rgba(40,20,15,.18); }
+  .inbox-meta { padding: 18px 16px 12px; border-bottom: 1px solid #ece7e2; font-size: 13px; line-height: 1.5; color: #4b3b35; }
+  .inbox-meta b { color: #1f1412; font-weight: 600; }
+  .inbox-body { overflow-x: auto; }
+  .note { max-width: 1240px; margin: 28px auto 48px; padding: 0 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+  .note h3 { margin: 0 0 6px; color: var(--ink); font: 400 18px/1.3 Didot, "Bodoni 72", Georgia, serif; }
+  .note ul { margin: 0; padding-left: 18px; }
+</style>
+</head>
+<body>
+
+<header class="intro">
+  <h1>Three directions for the RSVP emails</h1>
+  <p>Each direction shows the confirmation a guest receives and the notification Chris and Miriam receive for the same RSVP. Sample guest: Adaeze Okafor, accepting for two. Shown at phone width (390px), since most guests will open these on their phones. Click a direction's header to pick it.</p>
+</header>
+
+<!-- ============ A: The envelope ============ -->
+<section class="direction">
+  <div class="direction-head" data-choice="a" tabindex="0" onclick="toggleSelect(this)">
+    <h2>A. The envelope</h2>
+    <p>Continues the invitation itself: oxblood paper, gold type, the 12·12·26 date and the colours of the day as real swatches. Most on-brand; dark emails can be partly recoloured by some phone mail apps in dark mode.</p>
+    <span class="pick">Pick A</span>
+  </div>
+  <div class="pair">
+    <div class="inbox">
+      <div class="inbox-meta"><b>To guest</b> · From: Chris &amp; Miriam &lt;DoNotReply@mail.dds.legal&gt; · Reply-to: Chris, Miriam<br><b>Subject:</b> Your RSVP is in — see you on 12 December</div>
+      <div class="inbox-body">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#140504;">
+          <tr><td align="center" style="padding:16px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#3d0b0c;border:1px solid #8f6a2e;">
+              <tr><td style="padding:6px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #5e2a1c;">
+                  <tr><td align="center" style="padding:34px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#d9a84c;font-size:18px;letter-spacing:6px;">C | M</td></tr>
+                  <tr><td align="center" style="padding:26px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#f5e9d6;font-size:30px;line-height:1.2;">Thank you, Adaeze</td></tr>
+                  <tr><td align="center" style="padding:12px 22px 0;font-family:Georgia,serif;color:#e3cfb0;font-size:16px;line-height:1.6;">Your reply has reached us, and we can't wait to celebrate with you.</td></tr>
+                  <tr><td align="center" style="padding:22px 28px 0;">
+                    <table role="presentation" cellpadding="0" cellspacing="0" style="border:1px solid #d9a84c;border-radius:999px;">
+                      <tr><td style="padding:9px 22px;font-family:Georgia,serif;color:#f0ce83;font-size:14px;letter-spacing:1px;">Joyfully accepts, party of 2</td></tr>
+                    </table>
+                  </td></tr>
+                  <tr><td align="center" style="padding:34px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#d9a84c;font-size:13px;letter-spacing:5px;">SATURDAY</td></tr>
+                  <tr><td align="center" style="padding:6px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#f5e9d6;font-size:52px;line-height:1;">12<span style="color:#d9a84c;">·</span>12<span style="color:#d9a84c;">·</span>26</td></tr>
+                  <tr><td align="center" style="padding:12px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#d9a84c;font-size:12px;letter-spacing:2px;">SHERATON HOTEL&nbsp;·&nbsp;MAKURDI</td></tr>
+                  <tr><td style="padding:26px 28px 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td width="50%" align="center" valign="top" style="padding:0 6px;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;">
+                          <div style="color:#f0ce83;font-size:22px;">7:00 AM</div>
+                          <div style="padding-top:6px;color:#c5a77d;font-size:11px;letter-spacing:1px;line-height:1.6;">WHITE WEDDING<br>CEREMONY</div>
+                        </td>
+                        <td width="50%" align="center" valign="top" style="padding:0 6px;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;">
+                          <div style="color:#f0ce83;font-size:22px;">2:00 PM</div>
+                          <div style="padding-top:6px;color:#c5a77d;font-size:11px;letter-spacing:1px;line-height:1.6;">TRADITIONAL WEDDING<br>RECEPTION</div>
+                        </td>
+                      </tr>
+                    </table>
+                  </td></tr>
+                  <tr><td align="center" style="padding:30px 28px 10px;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#d9a84c;font-size:12px;letter-spacing:3px;">COLOURS OF THE DAY</td></tr>
+                  <tr><td align="center" style="padding:0 22px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #8f6a2e;">
+                      <tr>
+                        <td height="26" style="background:#c79a45;" title="Gold"></td>
+                        <td height="26" style="background:#7a1420;" title="Burgundy"></td>
+                        <td height="26" style="background:#5a3420;" title="Coffee brown"></td>
+                        <td height="26" style="background:#4f5a32;" title="Army green"></td>
+                        <td height="26" style="background:#2b2b2d;" title="Charcoal ash"></td>
+                      </tr>
+                    </table>
+                  </td></tr>
+                  <tr><td align="center" style="padding:8px 28px 0;font-family:Georgia,serif;color:#c5a77d;font-size:12px;line-height:1.6;">Gold, burgundy, coffee brown, army green and charcoal ash</td></tr>
+                  <tr><td align="center" style="padding:30px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#d9a84c;font-size:12px;letter-spacing:3px;">YOUR PRESENCE IS OUR GREATEST GIFT</td></tr>
+                  <tr><td align="center" style="padding:26px 22px 34px;font-family:Georgia,serif;color:#a98d69;font-size:13px;line-height:1.6;border-top:0;">
+                    Reply to this email to reach Chris and Miriam.<br>Need to change your answer? <a href="#" style="color:#f0ce83;">Open the invitation</a> and send your RSVP again with the same email.
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="inbox">
+      <div class="inbox-meta"><b>To Chris &amp; Miriam</b> · From: Wedding RSVPs &lt;DoNotReply@mail.dds.legal&gt; · Reply-to: Adaeze<br><b>Subject:</b> Adaeze Okafor joyfully accepts (party of 2)</div>
+      <div class="inbox-body">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#140504;">
+          <tr><td align="center" style="padding:16px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#3d0b0c;border:1px solid #8f6a2e;">
+              <tr><td style="padding:6px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #5e2a1c;">
+                  <tr><td align="center" style="padding:30px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#d9a84c;font-size:16px;letter-spacing:6px;">C | M</td></tr>
+                  <tr><td align="center" style="padding:20px 28px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#f5e9d6;font-size:27px;line-height:1.25;">Adaeze Okafor is coming</td></tr>
+                  <tr><td align="center" style="padding:8px 28px 0;font-family:Georgia,serif;color:#e3cfb0;font-size:15px;">Joyfully accepts, party of 2</td></tr>
+                  <tr><td style="padding:26px 22px 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:Georgia,serif;font-size:15px;line-height:1.5;">
+                      <tr><td style="padding:10px 0;border-top:1px solid #5e2a1c;color:#c5a77d;width:92px;">Email</td><td style="padding:10px 0;border-top:1px solid #5e2a1c;"><a href="#" style="color:#f0ce83;">adaeze.okafor@gmail.com</a></td></tr>
+                      <tr><td style="padding:10px 0;border-top:1px solid #5e2a1c;color:#c5a77d;">Phone</td><td style="padding:10px 0;border-top:1px solid #5e2a1c;"><a href="#" style="color:#f0ce83;">+234 803 555 0142</a></td></tr>
+                      <tr><td valign="top" style="padding:10px 0;border-top:1px solid #5e2a1c;border-bottom:1px solid #5e2a1c;color:#c5a77d;">Message</td><td style="padding:10px 0;border-top:1px solid #5e2a1c;border-bottom:1px solid #5e2a1c;color:#f5e9d6;font-style:italic;">“Can't wait to dance with you both. Makurdi won't know what hit it!”</td></tr>
+                    </table>
+                  </td></tr>
+                  <tr><td align="center" style="padding:26px 22px 0;font-family:Georgia,serif;color:#e3cfb0;font-size:15px;line-height:1.6;">So far: <span style="color:#f0ce83;">32 accepted</span> bringing <span style="color:#f0ce83;">64 guests</span>, and 5 declined.</td></tr>
+                  <tr><td align="center" style="padding:24px 28px 34px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="background:#d9a84c;border-radius:6px;"><a href="#" style="display:block;padding:11px 20px;font-family:Georgia,serif;font-size:14px;color:#2a0707;text-decoration:none;">WhatsApp Adaeze</a></td></tr><tr><td height="10"></td></tr><tr><td align="center" style="border:1px solid #d9a84c;border-radius:6px;"><a href="#" style="display:block;padding:10px 20px;font-family:Georgia,serif;font-size:14px;color:#f0ce83;text-decoration:none;">See all RSVPs</a></td></tr></table>
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ B: The letter ============ -->
+<section class="direction">
+  <div class="direction-head" data-choice="b" tabindex="0" onclick="toggleSelect(this)">
+    <h2>B. The letter</h2>
+    <p>A personal note from Chris and Miriam on white paper, with an oxblood header band carrying the monogram. Reads like a real reply rather than a receipt; the safest look in every inbox and in dark mode.</p>
+    <span class="pick">Pick B</span>
+  </div>
+  <div class="pair">
+    <div class="inbox">
+      <div class="inbox-meta"><b>To guest</b> · From: Chris &amp; Miriam &lt;DoNotReply@mail.dds.legal&gt; · Reply-to: Chris, Miriam<br><b>Subject:</b> Your RSVP is in — see you on 12 December</div>
+      <div class="inbox-body">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3efeb;">
+          <tr><td align="center" style="padding:16px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;">
+              <tr><td align="center" style="background:#3d0b0c;padding:22px 28px;border-bottom:3px solid #c79a45;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#f0ce83;font-size:20px;letter-spacing:6px;">C | M</td></tr>
+              <tr><td style="padding:36px 22px 0;font-family:Georgia,serif;color:#2a1a17;font-size:17px;line-height:1.7;">
+                <p style="margin:0 0 16px;">Dear Adaeze,</p>
+                <p style="margin:0 0 16px;">Thank you for your RSVP. We're so happy you and your guest will be with us, and we're counting the days until we can celebrate together.</p>
+                <p style="margin:0;">Here's everything you need for the day.</p>
+              </td></tr>
+              <tr><td style="padding:24px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border-left:3px solid #c79a45;">
+                  <tr><td style="padding:4px 0 4px 20px;font-family:Georgia,serif;color:#2a1a17;font-size:15px;line-height:1.75;">
+                    <strong style="font-weight:600;color:#3d0b0c;">Saturday, 12 December 2026</strong><br>
+                    Sheraton Hotel, Makurdi<br>
+                    7:00 AM &nbsp;White wedding ceremony<br>
+                    2:00 PM &nbsp;Traditional wedding reception<br>
+                    <span style="color:#6d5a52;">Colours of the day: gold, burgundy, coffee brown, army green and charcoal ash</span>
+                  </td></tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:24px 22px 0;font-family:Georgia,serif;color:#6d5a52;font-size:14px;line-height:1.6;">
+                Your reply: joyfully accepts, party of 2. To change it, <a href="#" style="color:#8a1c1f;">open the invitation</a> and send your RSVP again with the same email.
+              </td></tr>
+              <tr><td style="padding:28px 22px 40px;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#3d0b0c;font-size:20px;line-height:1.4;font-style:italic;">
+                With love,<br>Chris &amp; Miriam
+              </td></tr>
+              <tr><td style="padding:16px 22px;background:#faf7f4;font-family:Georgia,serif;color:#8a7a72;font-size:12px;line-height:1.6;">Reply to this email to reach Chris and Miriam directly.</td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="inbox">
+      <div class="inbox-meta"><b>To Chris &amp; Miriam</b> · From: Wedding RSVPs &lt;DoNotReply@mail.dds.legal&gt; · Reply-to: Adaeze<br><b>Subject:</b> Adaeze Okafor joyfully accepts (party of 2)</div>
+      <div class="inbox-body">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f3efeb;">
+          <tr><td align="center" style="padding:16px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;">
+              <tr><td style="background:#3d0b0c;padding:18px 22px;border-bottom:3px solid #c79a45;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#f0ce83;font-size:16px;letter-spacing:5px;">C | M <span style="color:#c5a77d;letter-spacing:1px;font-size:14px;">&nbsp; New RSVP</span></td></tr>
+              <tr><td style="padding:30px 22px 0;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#2a1a17;font-size:26px;line-height:1.25;">Adaeze Okafor is coming, with one guest.</td></tr>
+              <tr><td style="padding:20px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:Georgia,serif;font-size:15px;line-height:1.5;color:#2a1a17;">
+                  <tr><td style="padding:9px 0;border-top:1px solid #eee6df;color:#8a7a72;width:96px;">Response</td><td style="padding:9px 0;border-top:1px solid #eee6df;">Joyfully accepts, party of 2</td></tr>
+                  <tr><td style="padding:9px 0;border-top:1px solid #eee6df;color:#8a7a72;">Email</td><td style="padding:9px 0;border-top:1px solid #eee6df;"><a href="#" style="color:#8a1c1f;">adaeze.okafor@gmail.com</a></td></tr>
+                  <tr><td style="padding:9px 0;border-top:1px solid #eee6df;border-bottom:1px solid #eee6df;color:#8a7a72;">Phone</td><td style="padding:9px 0;border-top:1px solid #eee6df;border-bottom:1px solid #eee6df;"><a href="#" style="color:#8a1c1f;">+234 803 555 0142</a></td></tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:22px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#faf5f0;border-left:3px solid #c79a45;">
+                  <tr><td style="padding:14px 18px;font-family:Georgia,serif;color:#3d0b0c;font-size:16px;line-height:1.6;font-style:italic;">“Can't wait to dance with you both. Makurdi won't know what hit it!”</td></tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:22px 22px 0;font-family:Georgia,serif;color:#4b3b35;font-size:15px;line-height:1.6;">So far, 32 have accepted bringing 64 guests, and 5 have declined.</td></tr>
+              <tr><td style="padding:22px 22px 34px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="background:#3d0b0c;border-radius:6px;"><a href="#" style="display:block;padding:11px 20px;font-family:Georgia,serif;font-size:14px;color:#f0ce83;text-decoration:none;">WhatsApp Adaeze</a></td></tr><tr><td height="10"></td></tr><tr><td align="center" style="border:1px solid #3d0b0c;border-radius:6px;"><a href="#" style="display:block;padding:10px 20px;font-family:Georgia,serif;font-size:14px;color:#3d0b0c;text-decoration:none;">See all RSVPs</a></td></tr></table>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ C: The place card ============ -->
+<section class="direction">
+  <div class="direction-head" data-choice="c" tabindex="0" onclick="toggleSelect(this)">
+    <h2>C. The place card</h2>
+    <p>The guest's name set like a seating card at the reception, framed by the five colours of the day running across the top. Playful and keepsake-like; the dress colours become the signature.</p>
+    <span class="pick">Pick C</span>
+  </div>
+  <div class="pair">
+    <div class="inbox">
+      <div class="inbox-meta"><b>To guest</b> · From: Chris &amp; Miriam &lt;DoNotReply@mail.dds.legal&gt; · Reply-to: Chris, Miriam<br><b>Subject:</b> Your RSVP is in — see you on 12 December</div>
+      <div class="inbox-body">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#efe9e3;">
+          <tr><td align="center" style="padding:16px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;">
+              <tr><td>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                  <td height="10" style="background:#c79a45;"></td><td height="10" style="background:#7a1420;"></td><td height="10" style="background:#5a3420;"></td><td height="10" style="background:#4f5a32;"></td><td height="10" style="background:#2b2b2d;"></td>
+                </tr></table>
+              </td></tr>
+              <tr><td align="center" style="padding:30px 28px 0;font-family:Georgia,serif;color:#6d5a52;font-size:15px;line-height:1.6;">Chris &amp; Miriam have saved a seat for</td></tr>
+              <tr><td align="center" style="padding:18px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #c79a45;">
+                  <tr><td style="padding:4px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6d3ad;">
+                      <tr><td align="center" style="padding:26px 16px 8px;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#3d0b0c;font-size:31px;line-height:1.15;">Adaeze Okafor</td></tr>
+                      <tr><td align="center" style="padding:0 16px 24px;font-family:Georgia,serif;color:#8a6a2e;font-size:15px;font-style:italic;">and one guest</td></tr>
+                    </table>
+                  </td></tr>
+                </table>
+              </td></tr>
+              <tr><td align="center" style="padding:28px 22px 0;font-family:Georgia,serif;color:#2a1a17;font-size:16px;line-height:1.7;">
+                Saturday, 12 December 2026<br>Sheraton Hotel, Makurdi
+              </td></tr>
+              <tr><td style="padding:18px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:Georgia,serif;color:#2a1a17;">
+                  <tr>
+                    <td width="50%" align="center" valign="top" style="padding:12px 6px;border-top:1px solid #eee6df;border-bottom:1px solid #eee6df;"><div style="font-family:Didot,'Bodoni 72',Georgia,serif;font-size:21px;color:#3d0b0c;">7:00 AM</div><div style="font-size:13px;color:#6d5a52;padding-top:3px;">White wedding ceremony</div></td>
+                    <td width="50%" align="center" valign="top" style="padding:12px 6px;border-top:1px solid #eee6df;border-bottom:1px solid #eee6df;border-left:1px solid #eee6df;"><div style="font-family:Didot,'Bodoni 72',Georgia,serif;font-size:21px;color:#3d0b0c;">2:00 PM</div><div style="font-size:13px;color:#6d5a52;padding-top:3px;">Traditional wedding reception</div></td>
+                  </tr>
+                </table>
+              </td></tr>
+              <tr><td align="center" style="padding:24px 22px 10px;font-family:Georgia,serif;color:#2a1a17;font-size:15px;">Dress in the colours of the day</td></tr>
+              <tr><td align="center" style="padding:0 14px;">
+                <table role="presentation" cellpadding="0" cellspacing="0" style="font-family:Georgia,serif;font-size:12px;color:#6d5a52;"><tr>
+                  <td align="center" style="padding:0 5px;"><div style="width:44px;height:44px;border-radius:50%;background:#c79a45;margin:0 auto;"></div><div style="padding-top:6px;">Gold</div></td>
+                  <td align="center" style="padding:0 5px;"><div style="width:44px;height:44px;border-radius:50%;background:#7a1420;margin:0 auto;"></div><div style="padding-top:6px;">Burgundy</div></td>
+                  <td align="center" style="padding:0 5px;"><div style="width:44px;height:44px;border-radius:50%;background:#5a3420;margin:0 auto;"></div><div style="padding-top:6px;">Coffee<br>brown</div></td>
+                  <td align="center" style="padding:0 5px;"><div style="width:44px;height:44px;border-radius:50%;background:#4f5a32;margin:0 auto;"></div><div style="padding-top:6px;">Army<br>green</div></td>
+                  <td align="center" style="padding:0 5px;"><div style="width:44px;height:44px;border-radius:50%;background:#2b2b2d;margin:0 auto;"></div><div style="padding-top:6px;">Charcoal<br>ash</div></td>
+                </tr></table>
+              </td></tr>
+              <tr><td align="center" style="padding:28px 22px 32px;font-family:Georgia,serif;color:#8a7a72;font-size:13px;line-height:1.6;">
+                Reply to this email to reach Chris and Miriam.<br>Need to change your answer? <a href="#" style="color:#7a1420;">Open the invitation</a> and send your RSVP again with the same email.
+              </td></tr>
+              <tr><td>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                  <td height="4" style="background:#c79a45;"></td><td height="4" style="background:#7a1420;"></td><td height="4" style="background:#5a3420;"></td><td height="4" style="background:#4f5a32;"></td><td height="4" style="background:#2b2b2d;"></td>
+                </tr></table>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="inbox">
+      <div class="inbox-meta"><b>To Chris &amp; Miriam</b> · From: Wedding RSVPs &lt;DoNotReply@mail.dds.legal&gt; · Reply-to: Adaeze<br><b>Subject:</b> Adaeze Okafor joyfully accepts (party of 2)</div>
+      <div class="inbox-body">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#efe9e3;">
+          <tr><td align="center" style="padding:16px 8px;">
+            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#ffffff;">
+              <tr><td>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                  <td height="10" style="background:#c79a45;"></td><td height="10" style="background:#7a1420;"></td><td height="10" style="background:#5a3420;"></td><td height="10" style="background:#4f5a32;"></td><td height="10" style="background:#2b2b2d;"></td>
+                </tr></table>
+              </td></tr>
+              <tr><td align="center" style="padding:26px 28px 0;font-family:Georgia,serif;color:#6d5a52;font-size:15px;">A new place to set</td></tr>
+              <tr><td align="center" style="padding:16px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #c79a45;">
+                  <tr><td style="padding:4px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="border:1px solid #e6d3ad;">
+                      <tr><td align="center" style="padding:22px 16px 6px;font-family:Didot,'Bodoni 72','Bodoni MT',Georgia,serif;color:#3d0b0c;font-size:30px;line-height:1.15;">Adaeze Okafor</td></tr>
+                      <tr><td align="center" style="padding:0 16px 20px;font-family:Georgia,serif;color:#4f5a32;font-size:15px;">Joyfully accepts, party of 2</td></tr>
+                    </table>
+                  </td></tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:22px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="font-family:Georgia,serif;font-size:15px;line-height:1.5;color:#2a1a17;">
+                  <tr><td style="padding:9px 0;border-top:1px solid #eee6df;color:#8a7a72;width:84px;">Email</td><td style="padding:9px 0;border-top:1px solid #eee6df;"><a href="#" style="color:#7a1420;">adaeze.okafor@gmail.com</a></td></tr>
+                  <tr><td style="padding:9px 0;border-top:1px solid #eee6df;color:#8a7a72;">Phone</td><td style="padding:9px 0;border-top:1px solid #eee6df;"><a href="#" style="color:#7a1420;">+234 803 555 0142</a></td></tr>
+                  <tr><td valign="top" style="padding:9px 0;border-top:1px solid #eee6df;border-bottom:1px solid #eee6df;color:#8a7a72;">Message</td><td style="padding:9px 0;border-top:1px solid #eee6df;border-bottom:1px solid #eee6df;font-style:italic;color:#3d0b0c;">“Can't wait to dance with you both. Makurdi won't know what hit it!”</td></tr>
+                </table>
+              </td></tr>
+              <tr><td style="padding:22px 22px 0;font-family:Georgia,serif;color:#2a1a17;font-size:14px;">Replies so far</td></tr>
+              <tr><td style="padding:8px 22px 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                  <td width="86%" height="12" style="background:#7a1420;"></td>
+                  <td width="14%" height="12" style="background:#2b2b2d;"></td>
+                </tr></table>
+              </td></tr>
+              <tr><td style="padding:8px 22px 0;font-family:Georgia,serif;color:#6d5a52;font-size:13px;line-height:1.6;"><span style="color:#7a1420;">32 accepted (64 guests)</span> &nbsp; <span style="color:#2b2b2d;">5 declined</span></td></tr>
+              <tr><td align="center" style="padding:24px 28px 30px;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr><td align="center" style="background:#7a1420;border-radius:6px;"><a href="#" style="display:block;padding:11px 20px;font-family:Georgia,serif;font-size:14px;color:#ffffff;text-decoration:none;">WhatsApp Adaeze</a></td></tr><tr><td height="10"></td></tr><tr><td align="center" style="border:1px solid #7a1420;border-radius:6px;"><a href="#" style="display:block;padding:10px 20px;font-family:Georgia,serif;font-size:14px;color:#7a1420;text-decoration:none;">See all RSVPs</a></td></tr></table>
+              </td></tr>
+              <tr><td>
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                  <td height="4" style="background:#c79a45;"></td><td height="4" style="background:#7a1420;"></td><td height="4" style="background:#5a3420;"></td><td height="4" style="background:#4f5a32;"></td><td height="4" style="background:#2b2b2d;"></td>
+                </tr></table>
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="note">
+  <h3>Same in all three</h3>
+  <ul>
+    <li>Mobile first: single column, 22px side margins, full-width stacked buttons; still looks right on desktop at up to 520px wide.</li>
+    <li>Built from email-safe tables and inline styles, no images, so nothing is blocked or broken in Gmail or Outlook.</li>
+    <li>Didot shows on Apple devices; other inboxes fall back to Georgia.</li>
+    <li>Guests who decline get a warm "we'll miss you" version without the day's schedule.</li>
+    <li>The "See all RSVPs" link goes to the protected admin page.</li>
+  </ul>
+</section>
+
+</body>
+</html>
